@@ -12,12 +12,12 @@ import javax.swing.JPanel;
 
 public class Pawn extends JPanel {
 	private final Color[] colors = {
-		Color.BLUE,
-		Color.RED,
-		Color.GREEN,
-		Color.YELLOW,
-		Color.WHITE
-	};
+			Color.decode("#65CDD1"),
+			Color.decode("#EE6E6E"),
+			Color.decode("#89C66C"),
+			Color.decode("#E8E557"),
+			Color.WHITE
+		};
 	
 	private final int pawnCode;
 	private final CellColor pawnColor;
@@ -47,15 +47,15 @@ public class Pawn extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
-        int pawnWidth = this.pawnDimension.width - (pawnOffset / 2);
-        int pawnHeight = this.pawnDimension.height - (pawnOffset / 2);
+        int pawnWidth = this.pawnDimension.width - (this.pawnOffset / 2);
+        int pawnHeight = this.pawnDimension.height - (this.pawnOffset / 2);
         
-        int pawnCenterWidth = (int) (this.pawnDimension.width - (pawnOffset * 2.5));
-        int pawnCenterHeight = (int) (this.pawnDimension.height - (pawnOffset * 2.5));
+        int pawnCenterWidth = (int) (this.pawnDimension.width - (this.pawnOffset * 2.5));
+        int pawnCenterHeight = (int) (this.pawnDimension.height - (this.pawnOffset * 2.5));
         
         Graphics2D graphics2D = (Graphics2D) g;
         Ellipse2D.Double circle = new Ellipse2D.Double(0, 0, pawnWidth, pawnHeight);
-        Ellipse2D.Double circleCenter = new Ellipse2D.Double(pawnOffset, pawnOffset, pawnCenterWidth, pawnCenterHeight);
+        Ellipse2D.Double circleCenter = new Ellipse2D.Double(this.pawnOffset, this.pawnOffset, pawnCenterWidth, pawnCenterHeight);
         
         graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         
@@ -85,16 +85,16 @@ public class Pawn extends JPanel {
 	}
 	
 	public boolean movePawn(int changePosition) {
-		if(this.isPossible(changePosition)) {
+		if(this.canMove(changePosition)) {
 			int oldPosition = this.getPosition();
 			int newPosition = this.addPosition(changePosition);
 			
 			Cell newCell = player.getCell(newPosition);
 			Cell oldCell = player.getCell(oldPosition);
-			
-			boolean hasKilled = false;
+		
 			if(newCell.canKill()) {
-				hasKilled = newCell.killPawns(this);
+				boolean hasKilled = newCell.killPawns(this);
+				this.player.setKill(hasKilled);
 			}
 			
 			if(oldCell != null) {
@@ -103,23 +103,13 @@ public class Pawn extends JPanel {
 			
 			newCell.addPawn(this);
 			
-			/*Player pawnPlayer = this.getPlayer();
-			if(pawnPlayer.hasWon() || changePosition != 6 || !hasKilled) {
-				pawnPlayer.setTurn(false);
-			}*/
-			
 			return true;
 		}
 		
 		return false;
 	}
 	
-	public void setDead() {
-		this.setStatus(false);
-		this.setPosition(-1);
-	}
-	
-	public boolean isPossible(int changePosition) {
+	public boolean canMove(int changePosition) {
 		if(!this.hasWon()) {
 			int newPosition = this.pawnPosition + changePosition;
 			
@@ -128,13 +118,43 @@ public class Pawn extends JPanel {
 					return true;
 				}
 			} else {
-				if(changePosition == 6) {
+				if(changePosition == 6 && newPosition <= 56) {
 					return true;
 				}
 			}
 		}
 		
 		return false;
+	}
+	
+	public int addPosition(int changePosition) {
+		int newPosition = this.pawnPosition + changePosition;
+		
+		if(this.getStatus() == false) {
+			if(this.getPosition() == -1 && changePosition == 6) {
+				this.setPosition(0);
+				this.setStatus(true);
+				this.player.drawBase();
+			}
+		} else if(newPosition <= 56) {
+			this.pawnPosition = newPosition;
+			
+			if(this.getPosition() == 56) {
+				this.setStatus(false);
+				this.setWon(true);
+				
+				this.player.checkWon();
+			}
+		}
+		
+		return this.pawnPosition;
+	}
+	
+	public void setDead() {
+		this.setStatus(false);
+		this.setPosition(-1);
+		
+		this.player.drawBase();
 	}
 	
 	public void setStatus(boolean pawnStatus) {
@@ -153,34 +173,16 @@ public class Pawn extends JPanel {
 		return this.pawnWon;
 	}
 	
-	public int addPosition(int changePosition) {
-		int newPosition = this.pawnPosition + changePosition;
-		
-		if(this.getStatus() == false) {
-			if(this.getPosition() == -1 && changePosition == 6) {
-				this.setPosition(0);
-				this.setStatus(true);
-			}
-		} else if(newPosition <= 56) {
-			this.pawnPosition = newPosition;
-			
-			if(this.getPosition() == 56) {
-				this.setStatus(false);
-				this.setWon(true);
-				
-				this.player.checkWon();
-			}
-		}
-		
-		return this.pawnPosition;
-	}
-	
 	public void setPosition(int newPosition) {
 		this.pawnPosition = newPosition;
 	}
 	
 	public int getPosition() {
 		return this.pawnPosition;
+	}
+	
+	public void setPawnSelected() {
+		this.player.setPawnSelected(this);
 	}
 	
 	public String getCode() {

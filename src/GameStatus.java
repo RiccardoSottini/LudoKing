@@ -29,7 +29,7 @@ public class GameStatus extends JPanel {
 		Border panelBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
 		this.setBorder(panelBorder);
 		
-		this.setBackground(Color.GRAY);
+		this.setBackground(Color.decode("#A9A9A9"));
 		this.setOpaque(true);
 		this.setVisible(true);
 		
@@ -49,7 +49,6 @@ public class GameStatus extends JPanel {
 		this.playerList.setLocation(listPosition);
 		this.playerList.setLayout(null);
 		
-		this.playerList.setBackground(Color.LIGHT_GRAY);
 		this.playerList.setOpaque(true);
 		this.playerList.setVisible(true);
 		

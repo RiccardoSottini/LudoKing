@@ -50,52 +50,23 @@ public class Launcher extends JFrame {
 		this.setupPlayers();
 		this.setupFrame();
 		
-		/*Pawn p1 = new Pawn(players[0], 0, CellColor.Blue);
-		Pawn p2 = new Pawn(players[1], 0, CellColor.Red);
-		Pawn p3 = new Pawn(players[2], 0, CellColor.Green);
-		Pawn p4 = new Pawn(players[3], 0, CellColor.Yellow);
-		
-		openCells[1].addPawn(p1);
-		openCells[1].addPawn(p2);
-		openCells[1].addPawn(p3);
-		openCells[1].addPawn(p4);*/
-		
-		for(int d = 0; d < 300; d++) {
+		while(!this.isFinished()) {
 			for(int p = 0; p < nPlayers; p++) {
-				//int nDice = (d * nPlayers) + p;
-				//int diceValue = this.players[p].playDice().getValue();
-				
 				this.players[p].playerPlay();
-				
-				/*while(!this.players[p].hasDice()) {
-					
-				}*/
-				
-				
-				//this.players[p].setTurn(true);
-				
-				//Random rnd = new Random();
-				
-				//int n = rnd.nextInt(4);
-				
-				//this.players[p].playMove(n);
-
-				
-				
-				/*System.out.println("Roll Dice: #" + nDice + ", " + diceValue);
-				System.out.println("Player: " + playerCodes[p]);
-				
-				this.printCells();*/
-				
-				/*try {
-				    Thread.sleep(2000);
-				} catch (Exception e) {
-				    e.printStackTrace();
-				}*/
-				
-				//this.players[p].setTurn(false);
 			}
 		}
+	}
+	
+	public boolean isFinished() {
+		int playerCounter = 0;
+		
+		for(Player player : this.players) {
+			if(player.hasWon()) {
+				playerCounter++;
+			}
+		}
+		
+		return playerCounter == (nPlayers - 1);
 	}
 	
 	public void setupFrame() {
@@ -104,9 +75,7 @@ public class Launcher extends JFrame {
 		this.setResizable(false);                              
 		this.setLocationRelativeTo(null);
 		
-		
-		this.gameBoard = new GameBoard(this.openCells, this.closeCells);
-		//this.add(this.gameBoard);
+		this.gameBoard = new GameBoard(this.players, this.openCells, this.closeCells);
 		
 		Dimension statusSize = new Dimension(200, this.gameBoard.getFrameHeight());
 		Point statusPosition = new Point(this.gameBoard.getFrameWidth(), 0);
@@ -114,7 +83,6 @@ public class Launcher extends JFrame {
 		this.add(this.gameBoard, BorderLayout.WEST);
 		this.add(this.gameStatus, BorderLayout.EAST);
 		
-		//this.setPreferredSize(new Dimension(this.gameBoard.getFrameWidth(), this.gameBoard.getFrameHeight()));
 		this.pack();
 		this.setVisible(true);
 	}
@@ -199,6 +167,6 @@ public class Launcher extends JFrame {
 	public static void main(String[] args) {
 		int nPlayers = 2;
 		
-		Launcher launcer = new Launcher(nPlayers);
+		Launcher launcher = new Launcher(nPlayers);
 	}
 }

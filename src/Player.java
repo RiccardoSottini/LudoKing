@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -9,10 +10,10 @@ import javax.swing.border.Border;
 
 public class Player {
 	private final Color[] colors = {
-		Color.BLUE,
-		Color.RED,
-		Color.GREEN,
-		Color.YELLOW,
+		Color.decode("#65CDD1"),
+		Color.decode("#EE6E6E"),
+		Color.decode("#89C66C"),
+		Color.decode("#E8E557"),
 		Color.WHITE
 	};
 	
@@ -20,11 +21,14 @@ public class Player {
 	private final Cell[] playerCells;
 	private final char playerCode;
 	private final CellColor playerColor;
-	private boolean playerWon;
 	private JPanel playerLabel;
+	private boolean playerKill;
+	private boolean playerWon;
 	
 	private final Pawn[] pawns;
 	private Pawn pawnSelected = null;
+	
+	private CellBase[] baseCells;
 	
 	private Dice dice = null;
 	
@@ -36,9 +40,11 @@ public class Player {
 		this.playerCells = playerCells;
 		this.playerCode = playerCode;
 		this.playerColor = playerColor;
+		this.playerKill = false;
 		this.playerWon = false;
 		
 		this.pawns = new Pawn[4];
+		this.baseCells = new CellBase[4];
 		
 		for(int p = 0; p < 4; p++) {
 			this.pawns[p] = new Pawn(this, p, playerColor);
@@ -48,39 +54,53 @@ public class Player {
 		this.turnPlayer = false;
 	}
 	
-	int counter = 0;
-	
 	public void playerPlay() {
 		if(!this.hasWon()) {
-			this.setTurn(true);
-			
-			while(!this.hasDice()) {
-				try {
-				    Thread.sleep(100);
-				} catch (Exception e) {
-				    e.printStackTrace();
-				}
-			}
-			
-			System.out.println("PLAY MOVE " + this.canMove());
-			
-			if(this.canMove()) {
-				if(this.getDice().getValue() == 6 && counter <= 3) {
-					this.pawnSelected = this.pawns[counter];
-				}
-				counter++;
+			do {
+				this.setTurn(true);
+				this.removePawnSelected();
 				
-				while(!this.playMove()) {
+				while(!this.hasDice()) {
 					try {
 					    Thread.sleep(100);
 					} catch (Exception e) {
 					    e.printStackTrace();
 					}
 				}
-			}
+				
+				if(this.canMove()) {
+					while(!this.playMove()) {
+						try {
+						    Thread.sleep(100);
+						} catch (Exception e) {
+						    e.printStackTrace();
+						}
+					}
+				} else {
+					this.setTurn(false);
+				}
+			} while(!this.hasWon() && this.isPlayerTurn());
+		}
+	}
+	
+	public void setupBase(Dimension cellDimension, JPanel baseCenter) {
+		for(int baseIndex = 0; baseIndex < this.pawns.length; baseIndex++) {
+			int cellPositionX = (baseIndex % 2 == 0) ? 0 : cellDimension.width;
+			int cellPositionY = (baseIndex <= 1) ? 0 : cellDimension.height;
+			Point cellPosition = new Point(cellPositionX, cellPositionY);
+
+			this.baseCells[baseIndex] = new CellBase(cellDimension, cellPosition, this.pawns[baseIndex]);
+			
+			baseCenter.add(this.baseCells[baseIndex]);
 		}
 		
-		this.setTurn(false);
+		this.drawBase();
+	}
+	
+	public void drawBase() {
+		for(int baseIndex = 0; baseIndex < this.baseCells.length; baseIndex++) {
+			this.baseCells[baseIndex].drawPawn();
+		}
 	}
 	
 	public void setupLabel(Dimension labelDimension, Point labelPosition, JPanel playerList) {
@@ -117,13 +137,13 @@ public class Player {
 		this.turnPlayer = turnPlayer;
 		
 		if(this.turnPlayer) {
-			Border labelBorder = BorderFactory.createLineBorder(Color.ORANGE, 2);
+			Border labelBorder = BorderFactory.createLineBorder(Color.decode("#FFC300"), 2);
 			this.turnPanel.setBorder(labelBorder);
 			
 			this.setDice();
 		} else {
 			try {
-			    Thread.sleep(1000);
+			    Thread.sleep(500);
 			} catch (Exception e) {
 			    e.printStackTrace();
 			}
@@ -145,12 +165,16 @@ public class Player {
 		
 		this.dice = new Dice(this.turnPanel);
 		this.turnPanel.add(this.dice);
+		
+		this.turnPanel.repaint();
 	}
 	
 	public void deleteDice() {
 		if(this.dice != null) {
 			this.turnPanel.remove(this.dice);
 			this.dice = null;
+			
+			this.turnPanel.repaint();
 		}
 	}
 	
@@ -166,6 +190,10 @@ public class Player {
 		return pawnSelected != null;
 	}
 	
+	public Pawn[] getPawns() {
+		return this.pawns;
+	}
+	
 	public Pawn getPawnSelected() {
 		return pawnSelected;
 	}
@@ -179,14 +207,14 @@ public class Player {
 	}
 	
 	public boolean canMove() {
-		for(Pawn pawn : this.pawns) {
-			if(pawn.getStatus()) {
-				return true;
-			}
-		}
-		
 		if(this.hasDice()) {
-			return this.getDice().getValue() == 6;
+			Dice playerDice = this.getDice();
+			
+			for(Pawn pawn : this.pawns) {
+				if(pawn.canMove(playerDice.getValue())) {
+					return true;
+				}
+			}
 		}
 		
 		return false;
@@ -199,22 +227,18 @@ public class Player {
 					Pawn selectedPawn = this.getPawnSelected();
 					int changePosition = this.getDice().getValue();
 					
-					selectedPawn.movePawn(changePosition);
-					
-					return true;
+					if(selectedPawn.movePawn(changePosition)) {
+						if(this.hasWon() || (this.getDice().getValue() != 6 && !this.checkKill() && selectedPawn.getPosition() != 56)) {
+							this.setTurn(false);
+						}
+						
+						return true;
+					}
 				}
 			}
-		}
+		}	
 		
 		return false;
-		
-		/*System.out.println("Player: " + getCode());
-		System.out.println("Dice: " + this.dice.getValue());
-		
-		for(int c = 0; c < 57; c++) {
-			System.out.println("Cell #" + c + ", Color: " + playerCells[c].getColor() + ", Type: " + playerCells[c].getType());
-			System.out.println(playerCells[c].getPawns().size());
-		}*/
 	}
 	
 	public Cell getCell(int position) {
@@ -227,6 +251,17 @@ public class Player {
 	
 	public char getCode() {
 		return this.playerCode;
+	}
+	
+	public void setKill(boolean playerKill) {
+		this.playerKill = playerKill;
+	}
+	
+	public boolean checkKill() {
+		boolean killValue = this.playerKill;
+		this.setKill(false);
+		
+		return killValue;
 	}
 	
 	public void checkWon() {

@@ -18,10 +18,10 @@ import javax.swing.border.Border;
 
 public class Cell extends JPanel implements MouseListener  {
 	private final Color[] colors = {
-		Color.BLUE,
-		Color.RED,
-		Color.GREEN,
-		Color.YELLOW,
+		Color.decode("#65CDD1"),
+		Color.decode("#EE6E6E"),
+		Color.decode("#89C66C"),
+		Color.decode("#E8E557"),
 		Color.WHITE
 	};
 	
@@ -163,6 +163,7 @@ public class Cell extends JPanel implements MouseListener  {
 			this.setOpaque(true);
 		}
 		
+		this.setLayout(null);
 		this.setSize(this.cellDimension);
 		this.setLocation(this.cellPosition);
 		this.setVisible(true);
@@ -173,32 +174,66 @@ public class Cell extends JPanel implements MouseListener  {
 	public void drawPawns() {
 		this.removeAll();
 		
-		for(int p = 0; p < this.pawns.size(); p++) {
+		int nPawns = this.pawns.size();
+		
+		for(int p = 0; p < nPawns; p++) {
 			Pawn pawn = this.pawns.get(p);
 			int pawnOffset;
 			Dimension pawnDimension;
 			Point pawnPosition;
 			
-			if(this.pawns.size() == 1) {
+			if(nPawns == 1) {
 				pawnOffset = 4;
 				
 				int pawnWidth = this.cellWidth - (this.cellWidth / 4) - 2;
 				int pawnHeight = this.cellHeight - (this.cellHeight / 4) - 2;
-				
 				pawnDimension = new Dimension(pawnWidth, pawnHeight);
-				pawnPosition = new Point(0, 0);
+				
+				int pawnPositionX = 0;
+				int pawnPositionY = 0;
+				
+				if(this.cellType == CellType.End) {
+					pawnPositionX = (int) ((cellDimension.width - pawnWidth) / 2 - (pawnOffset * 1.5));
+					pawnPositionY = (int) ((cellDimension.height - pawnHeight) / 2 - (pawnOffset * 1.5));
+				}
+				
+				pawnPosition = new Point(pawnPositionX, pawnPositionY);
 				
 				pawn.drawPawn(pawnDimension, pawnPosition, pawnOffset, this);
 			} else {
 				pawnOffset = 2;
 				
-				//int pawnWidth = this.cellDimension.width - (this.cellDimension.width / 4)
 				int pawnWidth = (this.cellWidth - (this.cellWidth / 4)) / 2;
 				int pawnHeight = (this.cellHeight - (this.cellWidth / 4)) / 2;
-				int pawnPositionX = (int) ((p % 2 == 1) ? (pawnWidth + pawnOffset * 1.5) : 0);
-				int pawnPositionY = (int) ((p >= 2) ? (pawnHeight + pawnOffset * 1.5) : 0);
-				
 				pawnDimension = new Dimension(pawnWidth, pawnHeight);
+				
+				int pawnPositionX = 0;
+				int pawnPositionY = 0;
+				
+				if(this.cellType != CellType.End) {
+					pawnPositionX = (int) ((p % 2 == 1) ? (pawnWidth + pawnOffset * 1.5) : 0);
+					pawnPositionY = (int) ((p >= 2) ? (pawnHeight + pawnOffset * 1.5) : 0);
+				} else {
+					if(this.cellColor == CellColor.Blue) {
+						pawnPositionY = cellDimension.height - (pawnHeight * 2);
+					} else if(this.cellColor == CellColor.Red) {
+						pawnPositionX = pawnWidth / 2;
+					} else if(this.cellColor == CellColor.Green) {
+						pawnPositionY = pawnHeight / 2;
+					} else if(this.cellColor == CellColor.Yellow) {
+						pawnPositionX = cellDimension.width - (pawnWidth * 2);
+					}
+					
+					int displayOffsetX = (int) ((cellDimension.width - (pawnWidth * nPawns) - ((nPawns - 1) * pawnOffset)) / 2) - pawnOffset;
+					int displayOffsetY = (int) ((cellDimension.height - (pawnHeight * nPawns) - ((nPawns - 1) * pawnOffset)) / 2) - pawnOffset;
+					
+					if(this.cellColor == CellColor.Blue || this.cellColor == CellColor.Green) {
+						pawnPositionX = (int) (displayOffsetX + (p * (pawnWidth + pawnOffset)));
+					} else {
+						pawnPositionY = (int) (displayOffsetY + (p * (pawnHeight + pawnOffset)));
+					}
+				}
+				
 				pawnPosition = new Point(pawnPositionX, pawnPositionY);
 				
 				pawn.drawPawn(pawnDimension, pawnPosition, pawnOffset, this);

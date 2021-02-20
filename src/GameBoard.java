@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -11,11 +13,11 @@ import javax.swing.border.Border;
 
 public class GameBoard extends JPanel {
 	private final Color[] colors = {
-		Color.BLUE,
-		Color.RED,
-		Color.GREEN,
-		Color.YELLOW,
-		Color.BLACK
+		Color.decode("#65CDD1"),
+		Color.decode("#EE6E6E"),
+		Color.decode("#89C66C"),
+		Color.decode("#E8E557"),
+		Color.WHITE
 	};
 	
 	private final Color borderColor = Color.BLACK;
@@ -56,10 +58,12 @@ public class GameBoard extends JPanel {
 	private final int frameWidth = cellWidth * nCells;
 	private final int frameHeight = cellHeight * nCells;
 	
+	private Player[] players;
 	private Cell[] openCells;
 	private Cell[][] closeCells;
 	
-	public GameBoard(Cell[] openCells, Cell[][] closeCells) {
+	public GameBoard(Player[] players, Cell[] openCells, Cell[][] closeCells) {
+		this.players = players;
 		this.openCells = openCells;
 		this.closeCells = closeCells;
 		
@@ -124,6 +128,7 @@ public class GameBoard extends JPanel {
 	
 	public JPanel setupBaseCenter(int baseIndex) {
 		JPanel baseCenter = new JPanel();
+		baseCenter.setLayout(null);
 		
 		Dimension centerDimension = new Dimension(baseWidth - cellWidth * 2, baseHeight - cellHeight * 2);
 		
@@ -133,12 +138,20 @@ public class GameBoard extends JPanel {
 		
 		Border centerBorder = BorderFactory.createLineBorder(this.borderColor, 3);
 		baseCenter.setBorder(centerBorder);
-		baseCenter.setBackground(Color.LIGHT_GRAY);
+		baseCenter.setBackground(Color.decode("#F5F5F5"));
 		
 		baseCenter.setSize(centerDimension);
 		baseCenter.setLocation(centerPosition);
 		baseCenter.setOpaque(true);
 		baseCenter.setVisible(true);
+		
+		if(baseIndex < this.players.length) {
+			if(this.players[baseIndex] != null) {
+				Dimension cellDimension = new Dimension(centerDimension.width / 2, centerDimension.height / 2);
+				
+				this.players[baseIndex].setupBase(cellDimension, baseCenter);
+			}
+		}
 		
 		return baseCenter;
 	}
