@@ -94,6 +94,34 @@ public class Cell extends JPanel implements MouseListener  {
                 graphics2D.setStroke(new BasicStroke(2));
         		graphics2D.drawLine(x1, y1, x2, y2);
         	}
+        } else if(this.cellType == CellType.Star) {
+        	Graphics2D graphics2D = (Graphics2D) g;
+        	
+        	graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        	
+        	final int centerX = this.getWidth() / 2;
+        	final int centerY = (this.getHeight() / 2) + 2;
+        	
+        	final int nSpikes = 5;
+        	final int nPoints = (nSpikes * 2) + 1;
+        	
+        	final double SPIKINESS = 0.5;
+        	final int RADIUS = (this.getWidth() / 2) - 2;
+        	
+            int xPoint[] = new int[nPoints];
+            int yPoint[] = new int[nPoints];
+            
+            for (int p = 0; p < nPoints; p++) {
+                double iRadius = (p % 2 == 0) ? RADIUS : (RADIUS * SPIKINESS);
+                double angle = (p * 360.0) / (2 * nSpikes);
+
+                xPoint[p] = (int) (centerX + iRadius * Math.cos(Math.toRadians(angle - 90)));
+                yPoint[p] = (int) (centerY + iRadius * Math.sin(Math.toRadians(angle - 90)));
+            }
+
+            graphics2D.setStroke(new BasicStroke(2.f));
+            graphics2D.setColor(Color.black);
+            graphics2D.drawPolyline(xPoint, yPoint, nPoints);
         }
     }
 	
@@ -104,15 +132,6 @@ public class Cell extends JPanel implements MouseListener  {
 		this.cellDimension = cellDimension;
 		this.cellPosition = cellPosition;
 		this.boardPanel = boardPanel;
-		
-		JPanel pp = new JPanel();
-		pp.setPreferredSize(new Dimension(20, 20));
-		pp.setLocation(10, 10);
-		pp.setBackground(Color.BLACK);
-		pp.setOpaque(true);
-		pp.setVisible(true);
-		
-		//this.add(pp);
 		
 		if(this.cellType == CellType.End) {
 			int cellPositionX, cellPositionY;
@@ -174,10 +193,10 @@ public class Cell extends JPanel implements MouseListener  {
 				pawnOffset = 2;
 				
 				//int pawnWidth = this.cellDimension.width - (this.cellDimension.width / 4)
-				int pawnWidth = (this.cellWidth - 8) / 2;
-				int pawnHeight = (this.cellHeight - 8) / 2;
-				int pawnPositionX = ((p % 2 == 1) ? pawnWidth : 0);
-				int pawnPositionY = ((p >= 2) ? pawnHeight : 0);
+				int pawnWidth = (this.cellWidth - (this.cellWidth / 4)) / 2;
+				int pawnHeight = (this.cellHeight - (this.cellWidth / 4)) / 2;
+				int pawnPositionX = (int) ((p % 2 == 1) ? (pawnWidth + pawnOffset * 1.5) : 0);
+				int pawnPositionY = (int) ((p >= 2) ? (pawnHeight + pawnOffset * 1.5) : 0);
 				
 				pawnDimension = new Dimension(pawnWidth, pawnHeight);
 				pawnPosition = new Point(pawnPositionX, pawnPositionY);
@@ -187,10 +206,6 @@ public class Cell extends JPanel implements MouseListener  {
 		}
 		
 		this.repaint();
-	}
-	
-	public boolean canKill() {
-		return cellType == CellType.Open && cellColor == CellColor.White;
 	}
 	
 	public void addPawn(Pawn pawn) {
@@ -210,20 +225,38 @@ public class Cell extends JPanel implements MouseListener  {
 		}
 	}
 	
-	public void killPawns(Pawn selectedPawn) {
+	public void selectPawn() {
+		for(Pawn pawn : this.pawns) {
+			Player playerPawn = pawn.getPlayer();
+			
+			if(playerPawn.isPlayerTurn()) {
+				playerPawn.setPawnSelected(pawn);
+				return;
+			}
+		}
+	}
+	
+	public boolean killPawns(Pawn selectedPawn) {
+		boolean hasKilled = false;
+		
 		if(this.canKill()) {
 			for(int p = 0; p < this.pawns.size(); p++) {
 				Pawn comparedPawn = this.pawns.get(p);
 				
 				if(comparedPawn.getPlayerCode() != selectedPawn.getPlayerCode()) {
 					System.out.println("Pawn Killed: " + comparedPawn.getCode());
+					
 					comparedPawn.setDead();
 					this.removePawn(comparedPawn, false);
+					
+					hasKilled = true;
 				}
 			}
 			
 			this.drawPawns();
 		}
+		
+		return hasKilled;
 	}
 	
 	public ArrayList<Pawn> getPawns() {
@@ -240,6 +273,10 @@ public class Cell extends JPanel implements MouseListener  {
 		return pawnCodes;
 	}
 	
+	public boolean canKill() {
+		return cellType == CellType.Open && cellColor == CellColor.White;
+	}
+	
 	public CellColor getColor() {
 		return this.cellColor;
 	}
@@ -250,8 +287,7 @@ public class Cell extends JPanel implements MouseListener  {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		System.out.println("CLICK ON CELL ");
+		selectPawn();
 	}
 
 	@Override

@@ -92,8 +92,9 @@ public class Pawn extends JPanel {
 			Cell newCell = player.getCell(newPosition);
 			Cell oldCell = player.getCell(oldPosition);
 			
+			boolean hasKilled = false;
 			if(newCell.canKill()) {
-				newCell.killPawns(this);
+				hasKilled = newCell.killPawns(this);
 			}
 			
 			if(oldCell != null) {
@@ -101,6 +102,11 @@ public class Pawn extends JPanel {
 			}
 			
 			newCell.addPawn(this);
+			
+			/*Player pawnPlayer = this.getPlayer();
+			if(pawnPlayer.hasWon() || changePosition != 6 || !hasKilled) {
+				pawnPlayer.setTurn(false);
+			}*/
 			
 			return true;
 		}

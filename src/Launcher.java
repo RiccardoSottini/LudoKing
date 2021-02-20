@@ -1,5 +1,13 @@
 import java.util.ArrayList;
 import java.util.Random;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Point;
+
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 enum CellColor {
 	Blue,
@@ -16,7 +24,7 @@ enum CellType {
 	End
 };
 
-public class Launcher {
+public class Launcher extends JFrame {
 	private final char[] playerCodes = {'B', 'R', 'G', 'Y'};
 	
 	private final int MAX_PLAYERS = 4;
@@ -28,6 +36,9 @@ public class Launcher {
 	private int nPlayers;
 	private Player[] players;
 	
+	private GameBoard gameBoard;
+	private GameStatus gameStatus;
+	
 	public Launcher(int nPlayers) {	
 		this.openCells = new Cell[OPEN_CELLS];
 		this.closeCells = new Cell[MAX_PLAYERS][6];
@@ -37,8 +48,7 @@ public class Launcher {
 		
 		this.setupCells();
 		this.setupPlayers();
-		
-		GameField gameField = new GameField(openCells, closeCells);
+		this.setupFrame();
 		
 		/*Pawn p1 = new Pawn(players[0], 0, CellColor.Blue);
 		Pawn p2 = new Pawn(players[1], 0, CellColor.Red);
@@ -52,27 +62,61 @@ public class Launcher {
 		
 		for(int d = 0; d < 300; d++) {
 			for(int p = 0; p < nPlayers; p++) {
-				int nDice = (d * nPlayers) + p;
-				int diceValue = this.players[p].playDice().getValue();
+				//int nDice = (d * nPlayers) + p;
+				//int diceValue = this.players[p].playDice().getValue();
 				
-				Random rnd = new Random();
+				this.players[p].playerPlay();
 				
-				int n = rnd.nextInt(4);
+				/*while(!this.players[p].hasDice()) {
+					
+				}*/
 				
-				this.players[p].playMove(n);
+				
+				//this.players[p].setTurn(true);
+				
+				//Random rnd = new Random();
+				
+				//int n = rnd.nextInt(4);
+				
+				//this.players[p].playMove(n);
+
+				
 				
 				/*System.out.println("Roll Dice: #" + nDice + ", " + diceValue);
 				System.out.println("Player: " + playerCodes[p]);
 				
 				this.printCells();*/
 				
-				try {
-				    Thread.sleep(100);
+				/*try {
+				    Thread.sleep(2000);
 				} catch (Exception e) {
 				    e.printStackTrace();
-				}
+				}*/
+				
+				//this.players[p].setTurn(false);
 			}
 		}
+	}
+	
+	public void setupFrame() {
+		this.setTitle("Ludo King");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
+		this.setResizable(false);                              
+		this.setLocationRelativeTo(null);
+		
+		
+		this.gameBoard = new GameBoard(this.openCells, this.closeCells);
+		//this.add(this.gameBoard);
+		
+		Dimension statusSize = new Dimension(200, this.gameBoard.getFrameHeight());
+		Point statusPosition = new Point(this.gameBoard.getFrameWidth(), 0);
+		this.gameStatus = new GameStatus(this.players, statusSize, statusPosition);
+		this.add(this.gameBoard, BorderLayout.WEST);
+		this.add(this.gameStatus, BorderLayout.EAST);
+		
+		//this.setPreferredSize(new Dimension(this.gameBoard.getFrameWidth(), this.gameBoard.getFrameHeight()));
+		this.pack();
+		this.setVisible(true);
 	}
 	
 	public void setupCells() {
@@ -122,7 +166,7 @@ public class Launcher {
 				playerCells[cellIndex] = this.closeCells[p][c];
 			}
 			
-			this.players[p] = new Player(playerCells, playerCode, playerColor);
+			this.players[p] = new Player("test", playerCells, playerCode, playerColor);
 		}
 	}
 	
@@ -153,7 +197,7 @@ public class Launcher {
 	}
 	
 	public static void main(String[] args) {
-		int nPlayers = 4;
+		int nPlayers = 2;
 		
 		Launcher launcer = new Launcher(nPlayers);
 	}

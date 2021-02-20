@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
-public class GameField extends JFrame {
+public class GameBoard extends JPanel {
 	private final Color[] colors = {
 		Color.BLUE,
 		Color.RED,
@@ -46,62 +46,29 @@ public class GameField extends JFrame {
 		{0, 9},		{0, 0},		{9, 0},		{9, 9}
 	};
 	
-	private final int nCells = 16;
-	private final int cellWidth = 46;
-	private final int cellHeight = 46;
+	private final int nCells = 15;
+	private final int cellWidth = 40;
+	private final int cellHeight = 40;
 	
 	private final int baseWidth = cellWidth * 6;
 	private final int baseHeight = cellHeight * 6;
 	
-	private final int frameWidth = cellWidth * nCells - 20;
+	private final int frameWidth = cellWidth * nCells;
 	private final int frameHeight = cellHeight * nCells;
 	
 	private Cell[] openCells;
 	private Cell[][] closeCells;
 	
-	public GameField(Cell[] openCells, Cell[][] closeCells) {
+	public GameBoard(Cell[] openCells, Cell[][] closeCells) {
 		this.openCells = openCells;
 		this.closeCells = closeCells;
 		
-		this.setupFrame();
+		this.setupBoard();
 	}
 	
-	public void setupFrame() {
-		this.setTitle("Ludo King");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-		this.setResizable(false);                              
-		this.setLocationRelativeTo(null);
-		//this.setLayout(null);
-		
-		//this.add(this.setupBoard());
-		
-		/*JPanel glassPane = new JPanel();
-		glassPane.setLayout(null);
-		glassPane.setPreferredSize(new Dimension(this.frameWidth, this.frameHeight));
-		glassPane.setOpaque(true);
-		glassPane.setVisible(true);
-		
-		JPanel test = new JPanel();
-		test.setBackground(Color.BLACK);
-		test.setPreferredSize(new Dimension(50, 50));
-		test.setOpaque(true);
-		test.setVisible(true);
-		
-		glassPane.add(test);*/
-		
-		this.add(this.createBoard());
-		//this.setGlassPane(glassPane);
-		
+	public JPanel setupBoard() {
+		this.setLayout(null);
 		this.setPreferredSize(new Dimension(this.frameWidth, this.frameHeight));
-		this.pack();
-		this.setVisible(true);
-	}
-	
-	public JPanel createBoard() {
-		JPanel boardPanel = new JPanel();
-		
-		boardPanel.setLayout(null);
-		boardPanel.setPreferredSize(new Dimension(this.frameWidth, this.frameHeight));
 	
 		for(int c = 0; c < this.openCells.length; c++) {
 			Dimension cellDimension = new Dimension(this.cellWidth, this.cellHeight);
@@ -110,7 +77,7 @@ public class GameField extends JFrame {
 			int positionY = openPositions[c][1] * cellHeight;
 			Point cellPosition = new Point(positionX, positionY);
 			
-			this.openCells[c].setupCell(cellDimension, cellPosition, boardPanel);
+			this.openCells[c].setupCell(cellDimension, cellPosition, this);
 		}
 		
 		for(int p = 0; p < closeCells.length; p++) {
@@ -122,16 +89,16 @@ public class GameField extends JFrame {
 				int positionY = closePositions[positionIndex][1] * cellHeight;
 				Point cellPosition = new Point(positionX, positionY);
 				
-				this.closeCells[p][c].setupCell(cellDimension, cellPosition, boardPanel);
+				this.closeCells[p][c].setupCell(cellDimension, cellPosition, this);
 			}
 		}
 		
 		for(int baseIndex = 0; baseIndex < 4; baseIndex++) {
-			boardPanel.add(this.setupBaseCenter(baseIndex));
-			boardPanel.add(this.setupBase(baseIndex));
+			this.add(this.setupBaseCenter(baseIndex));
+			this.add(this.setupBase(baseIndex));
 		}
 		
-		return boardPanel;
+		return this;
 	}
 	
 	public JPanel setupBase(int baseIndex) {
@@ -164,8 +131,6 @@ public class GameField extends JFrame {
 		int positionY = (basePositions[baseIndex][1] + 1) * cellHeight;
 		Point centerPosition = new Point(positionX, positionY);
 		
-		System.out.println(centerPosition.x + ", " + centerPosition.y);
-		
 		Border centerBorder = BorderFactory.createLineBorder(this.borderColor, 3);
 		baseCenter.setBorder(centerBorder);
 		baseCenter.setBackground(Color.LIGHT_GRAY);
@@ -178,34 +143,11 @@ public class GameField extends JFrame {
 		return baseCenter;
 	}
 	
-	/*public JPanel setupBoard() {
-		JPanel boardPanel = new JPanel();
-		
-		boardPanel.setLayout(new GridLayout(this.nCells, this.nCells));
-		boardPanel.setOpaque(false);
-		
-		for(int row = 0; row < nCells; row++) {
-			for(int column = 0; column < nCells; column++) {
-				boardPanel.add(this.setupCell());
-			}
-		}
-		
-		return boardPanel;
+	public int getFrameWidth() {
+		return this.frameWidth;
 	}
 	
-	public JLabel setupCell() {
-		JLabel cellPanel = new JLabel();
-		Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
-		
-		cellPanel.setPreferredSize(new Dimension(cellWidth, cellHeight));
-		cellPanel.setOpaque(true);
-		cellPanel.setBackground(Color.decode("#593E1A"));
-		cellPanel.setBorder(cellBorder);
-        
-        return cellPanel;
-	}*/
-	
-	public void setupCells() {
-		
+	public int getFrameHeight() {
+		return this.frameHeight;
 	}
 }
