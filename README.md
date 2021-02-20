@@ -2,6 +2,9 @@
 
 Ludo King an strategical game to be played with friends and family. To play the following game you will need 2 to 4 players, remember the more players there are the more fun it is!
 
+The programming language we used develop the following game, "Ludo King", was "Java", therefore it is necessary that the users have "Java" installed on their computer to run the game.
+it is recommended that you have installed at least the Java SE-14 version to run it.
+
 # How to play?
 
 * Press the ROLL button to roll the dice. 

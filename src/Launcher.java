@@ -4,8 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -121,6 +126,14 @@ public class Launcher extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
 		this.setResizable(false);                              
 		this.setLocationRelativeTo(null);
+		
+		try {
+			BufferedImage image = ImageIO.read(getClass().getResource("icon.jpg"));
+			ImageIcon frameIcon = new ImageIcon(image);
+			this.setIconImage(image);
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
 	}
 	
 	public void setupGame() {
