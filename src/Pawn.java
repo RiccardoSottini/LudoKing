@@ -10,6 +10,9 @@ import java.awt.geom.Ellipse2D;
 
 import javax.swing.JPanel;
 
+/**
+ * Class that is used to show a single Pawn on the Game Board
+ */
 public class Pawn extends JPanel {
 	private final Color[] colors = {
 			Color.decode("#65CDD1"),
@@ -32,6 +35,12 @@ public class Pawn extends JPanel {
 	private Point pawnCoord;
 	private int pawnOffset;
 	
+	/**
+	 * Creates a new instance of Pawn
+	 * @param player Player that has the Pawn
+	 * @param pawnCode Code of the Pawn
+	 * @param pawnColor Color of the Pawn
+	 */
 	public Pawn(Player player, int pawnCode, CellColor pawnColor) {
 		this.pawnCode = pawnCode;
 		this.pawnColor = pawnColor;
@@ -43,6 +52,10 @@ public class Pawn extends JPanel {
 		this.playerCode = player.getCode();
 	}
 	
+	/**
+	 * Function that is used to draw the Pawn on its cell
+	 * @param g Graphics component used by Java to draw the Panel
+	 */
 	@Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -71,6 +84,13 @@ public class Pawn extends JPanel {
         graphics2D.draw(circleCenter);
 	}
 	
+	/*
+	 * Function that setup the pawn to then display on its cell
+	 * @param pawnDimension Dimension of the Pawn
+	 * @param pawnCoord Position of the Pawn
+	 * @param pawnOffset Shift in position to calculate its final Position
+	 * @param cellPanel Panel of the Cell
+	 */
 	public void drawPawn(Dimension pawnDimension, Point pawnCoord, int pawnOffset, JPanel cellPanel) {
 		this.pawnDimension = pawnDimension;
 		this.pawnCoord = new Point((int)(pawnCoord.x + pawnOffset * 1.5), (int)(pawnCoord.y + pawnOffset + 2));
@@ -84,6 +104,11 @@ public class Pawn extends JPanel {
 		cellPanel.add(this);
 	}
 	
+	/**
+	 * Function used to move the Pawn to a new Cell
+	 * @param changePosition Number of cells that the Pawn has to move ahead
+	 * @return Returns whether the pawn moved or not
+	 */
 	public boolean movePawn(int changePosition) {
 		if(this.canMove(changePosition)) {
 			int oldPosition = this.getPosition();
@@ -109,6 +134,11 @@ public class Pawn extends JPanel {
 		return false;
 	}
 	
+	/**
+	 * Function used to check whether the Pawn can move to a new Cell or not
+	 * @param changePosition Number of cells that the Pawn has to move ahead
+	 * @return Returns whether the pawn can be moved or not
+	 */
 	public boolean canMove(int changePosition) {
 		if(!this.hasWon()) {
 			int newPosition = this.pawnPosition + changePosition;
@@ -127,6 +157,11 @@ public class Pawn extends JPanel {
 		return false;
 	}
 	
+	/**
+	 * Function used to move the Pawn by a certain number of positions
+	 * @param changePosition Number of cells that the Pawn has to move ahead
+	 * @return Returns the new Position of the Pawn
+	 */
 	public int addPosition(int changePosition) {
 		int newPosition = this.pawnPosition + changePosition;
 		
@@ -150,6 +185,9 @@ public class Pawn extends JPanel {
 		return this.pawnPosition;
 	}
 	
+	/**
+	 * Set the pawn dead
+	 */
 	public void setDead() {
 		this.setStatus(false);
 		this.setPosition(-1);
@@ -157,42 +195,81 @@ public class Pawn extends JPanel {
 		this.player.drawBase();
 	}
 	
+	/**
+	 * Set the status of the Pawn
+	 * @param pawnStatus Status of the Pawn
+	 */
 	public void setStatus(boolean pawnStatus) {
 		this.pawnStatus = pawnStatus;
 	}
 	
+	/**
+	 * Get the status of the Pawn
+	 * @return Status of the Pawn
+	 */
 	public boolean getStatus() {
 		return this.pawnStatus;
 	}
 	
+	/**
+	 * Set whether the Pawn has reached the end or not
+	 * @param pawnWon variable to define whether the Pawn has reached the end or not
+	 */
 	public void setWon(boolean pawnWon) {
 		this.pawnWon = pawnWon;
 	}
 	
+	/**
+	 * Return whether the Pawn has reached the end or not
+	 * @return whether the Pawn has reached the end or not
+	 */
 	public boolean hasWon() {
 		return this.pawnWon;
 	}
 	
+	/**
+	 * Set the a new position of the Pawn
+	 * @param newPosition New Position of the Pawn
+	 */
 	public void setPosition(int newPosition) {
 		this.pawnPosition = newPosition;
 	}
 	
+	/**
+	 * Get the Position of the Pawn
+	 * @return Position of the Pawn
+	 */
 	public int getPosition() {
 		return this.pawnPosition;
 	}
 	
+	/**
+	 * Set the Pawn to be selected by the Player
+	 */
 	public void setPawnSelected() {
 		this.player.setPawnSelected(this);
 	}
 	
+	/**
+	 * Get the code of the Pawn
+	 * @return Code of the Pawn
+	 */
 	public String getCode() {
 		return this.playerCode + Integer.toString(this.pawnCode);
 	}
 	
+	/**
+	 * Get the Player that has this Pawn
+	 * @return Player that has this Pawn
+	 */
 	public Player getPlayer() {
 		return this.player;
 	}
 	
+	/**
+	 * Get the Player's Code that has this Pawn
+	 * @return Player's Code that has this Pawn
+	 */
 	public char getPlayerCode() {
 		return this.playerCode;
 	}

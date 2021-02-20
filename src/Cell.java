@@ -1,9 +1,9 @@
 import java.awt.BasicStroke;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
@@ -16,7 +16,14 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+/**
+ * Class that is used to show a single Cell for the Game
+ */
 public class Cell extends JPanel implements MouseListener  {
+	
+	/**
+	 * The 4 colours that are used to give each player a different colour.
+	 */
 	private final Color[] colors = {
 		Color.decode("#65CDD1"),
 		Color.decode("#EE6E6E"),
@@ -47,6 +54,11 @@ public class Cell extends JPanel implements MouseListener  {
 	
 	private JPanel boardPanel;
 	
+	/**
+	 * Creates a new instance of Cell
+	 * @param cellColor Color of the Cell
+	 * @param cellType Type of the Cell
+	 */
 	public Cell(CellColor cellColor, CellType cellType) {
 		this.pawns = new ArrayList<Pawn>();
 		this.cellColor = cellColor;
@@ -55,6 +67,10 @@ public class Cell extends JPanel implements MouseListener  {
 		this.addMouseListener(this);
 	}
 	
+	/**
+	 * Function to create the 4 triangles which are the winning point 
+	 * @return the polygon (triangle)
+	 */
 	private Shape createTriangle() {
         Polygon polygon = new Polygon();
         int index = cellColor.ordinal();
@@ -69,6 +85,10 @@ public class Cell extends JPanel implements MouseListener  {
         return polygon;
     }
 	
+	/**
+	 * Function that is used to draw the Cell on the Frame
+	 * @param g Graphics component used by Java to draw the Panel
+	 */
 	@Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -127,6 +147,12 @@ public class Cell extends JPanel implements MouseListener  {
         }
     }
 	
+	/**
+	 * Creates a cell and gives it a dimension and position
+	 * @param cellDimension Size of the cell
+	 * @param cellPosition Coordinates of the cell
+	 * @param boardPanel Panel used to display the cells
+	 */
 	public void setupCell(Dimension cellDimension, Point cellPosition, JPanel boardPanel) {
 		this.cellWidth = cellDimension.width;
 		this.cellHeight = cellDimension.height;
@@ -173,6 +199,9 @@ public class Cell extends JPanel implements MouseListener  {
 		boardPanel.add(this);
 	}
 	
+	/**
+	 * Function to draw the pawns contained in this cell
+	 */
 	public void drawPawns() {
 		this.removeAll();
 		
@@ -245,11 +274,20 @@ public class Cell extends JPanel implements MouseListener  {
 		this.repaint();
 	}
 	
+	/**
+	 * Add a single Pawn to this cell and draw it
+	 * @param pawn Pawn to add
+	 */
 	public void addPawn(Pawn pawn) {
 		this.pawns.add(pawn);
 		this.drawPawns();
 	}
 	
+	/**
+	 * If a pawn is killed by a player, it goes back to its base
+	 * @param pawn Pawn to remove
+	 * @param cellRefresh it says whether the cell has to be redrawn or not
+	 */
 	public void removePawn(Pawn pawn, boolean cellRefresh) {
 		for(int p = 0; p < this.pawns.size(); p++) {
 			if(pawn == this.pawns.get(p)) {
@@ -262,6 +300,9 @@ public class Cell extends JPanel implements MouseListener  {
 		}
 	}
 	
+	/**
+	 * Select a single pawn contained in this cell of the Player who is currently playing
+	 */
 	public void selectPawn() {
 		for(Pawn pawn : this.pawns) {
 			Player playerPawn = pawn.getPlayer();
@@ -273,6 +314,11 @@ public class Cell extends JPanel implements MouseListener  {
 		}
 	}
 	
+	/**
+	 * Function that allows the player to kill other Players' pawns
+	 * @param selectedPawn The Pawn selected by the Player
+	 * @return hasKilled It says whether a pawn was killed or not
+	 */
 	public boolean killPawns(Pawn selectedPawn) {
 		boolean hasKilled = false;
 		
@@ -318,10 +364,16 @@ public class Cell extends JPanel implements MouseListener  {
 		return hasKilled;
 	}
 	
+	/**
+	 * Returns the pawns contained by the cell
+	 */
 	public ArrayList<Pawn> getPawns() {
 		return this.pawns;
 	}
 
+	/**
+	 * Returns the codes of the pawns contained by the cell
+	 */
 	public ArrayList<String> getPawnCodes() {
 		ArrayList<String> pawnCodes = new ArrayList<String>();
 		
@@ -332,18 +384,34 @@ public class Cell extends JPanel implements MouseListener  {
 		return pawnCodes;
 	}
 	
+	/**
+	 * Function that returns whether a player can kill on this cell
+	 * @return returns whether a player can kill on this cell
+	 */
 	public boolean canKill() {
 		return cellType == CellType.Open && cellColor == CellColor.White;
 	}
 	
+	/**
+	 * Function that returns the color of this cell
+	 * @return returns the color of this cell
+	 */
 	public CellColor getColor() {
 		return this.cellColor;
 	}
 	
+	/**
+	 * Function that returns the type of this cell
+	 * @return returns the type of this cell
+	 */
 	public CellType getType() {
 		return this.cellType;
 	}
 
+	/**
+	 * Function used to manage the selection of a Pawn
+	 * @param e MouseEvent object to manage the mouse click
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		selectPawn();

@@ -11,6 +11,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+/**
+ * Class that is used to manage the Board of the Game and show its cells
+ */
 public class GameBoard extends JPanel {
 	private final Color[] colors = {
 		Color.decode("#65CDD1"),
@@ -62,6 +65,12 @@ public class GameBoard extends JPanel {
 	private Cell[] openCells;
 	private Cell[][] closeCells;
 	
+	/**
+	 * Creates a new instance of GameBoard
+	 * @param players Players that are playing the game
+	 * @param openCells cells that are accessible by each of the players
+	 * @param closeCells cells that are accessible by certain players
+	 */
 	public GameBoard(Player[] players, Cell[] openCells, Cell[][] closeCells) {
 		this.players = players;
 		this.openCells = openCells;
@@ -70,6 +79,9 @@ public class GameBoard extends JPanel {
 		this.setupBoard();
 	}
 	
+	/**
+	 * Function used to display the panels of the Board to be displayed
+	 */
 	public JPanel setupBoard() {
 		this.setLayout(null);
 		this.setPreferredSize(new Dimension(this.frameWidth, this.frameHeight));
@@ -105,6 +117,11 @@ public class GameBoard extends JPanel {
 		return this;
 	}
 	
+	/**
+	 * Function that is used to display the base for each of the players
+	 * @param baseIndex Index of the Player
+	 * @return Base Panel of a certain Player to be displayed on the Board
+	 */
 	public JPanel setupBase(int baseIndex) {
 		JPanel basePanel = new JPanel();
 		
@@ -126,6 +143,11 @@ public class GameBoard extends JPanel {
 		return basePanel;
 	}
 	
+	/**
+	 * Function that is used to display the center of the base for each of the players
+	 * @param baseIndex Index of the Player
+	 * @return Center of the Base Panel of a certain Player to be displayed on the Board
+	 */
 	public JPanel setupBaseCenter(int baseIndex) {
 		JPanel baseCenter = new JPanel();
 		baseCenter.setLayout(null);
@@ -156,10 +178,18 @@ public class GameBoard extends JPanel {
 		return baseCenter;
 	}
 	
+	/**
+	 * Get the Width of the Board
+	 * @return Width of the Board
+	 */
 	public int getFrameWidth() {
 		return this.frameWidth;
 	}
 	
+	/**
+	 * Get the Height of the Board
+	 * @return Height of the Board
+	 */
 	public int getFrameHeight() {
 		return this.frameHeight;
 	}

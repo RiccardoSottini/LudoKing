@@ -8,6 +8,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+/**
+ * Class that is used to manage the Status Panel of the Game
+ */
 public class GameStatus extends JPanel {
 	private final Dimension panelSize;
 	private final Point panelPosition;
@@ -15,6 +18,12 @@ public class GameStatus extends JPanel {
 	Player[] players;
 	private JPanel playerList;
 	
+	/**
+	 * Creates new instance of GameStatus
+	 * @param players List of the players
+	 * @param panelSize Size of the Game Status Panel
+	 * @param panelPosition Position of the Game Stauts Panel
+	 */
 	public GameStatus(Player[] players, Dimension panelSize, Point panelPosition) {
 		this.players = players;
 		this.panelSize = panelSize;
@@ -23,6 +32,9 @@ public class GameStatus extends JPanel {
 		this.setupPanel();
 	}
 	
+	/**
+	 * Function that is used to display the Game Status panel
+	 */
 	private void setupPanel() {
 		this.setPreferredSize(new Dimension(this.panelSize.width, this.panelSize.height));
 		this.setLocation(this.panelPosition.x, this.panelPosition.y);
@@ -38,6 +50,9 @@ public class GameStatus extends JPanel {
 		this.setupList();
 	}
 	
+	/**
+	 * Function that is used to display the list of the players
+	 */
 	private void setupList() {
 		this.playerList = new JPanel();
 		
@@ -64,6 +79,9 @@ public class GameStatus extends JPanel {
 		this.add(this.playerList);
 	}
 	
+	/**
+	 * Function that is used to display the Ending label at the end of a Game
+	 */
 	public void setFinished() {
 		JLabel finishedLabel = new JLabel("The Game is Ended");
 		

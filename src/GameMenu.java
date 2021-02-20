@@ -21,6 +21,9 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+/**
+ * Class that is used to manage the Menu of the Game
+ */
 public class GameMenu extends JPanel {
 	private final Color[] playerColors = {
 		Color.decode("#65CDD1"),
@@ -50,6 +53,10 @@ public class GameMenu extends JPanel {
 	
 	private boolean hasInput;
 	
+	/**
+	 * Creates a new instance of GameMenu
+	 * @param menuDimension Dimension of the Menu
+	 */
 	public GameMenu(Dimension menuDimension) {
 		this.menuDimension = menuDimension;
 		this.nPlayers = MIN_PLAYERS;
@@ -58,6 +65,9 @@ public class GameMenu extends JPanel {
 		this.setupMenu();
 	}
 	
+	/**
+	 * Function that is waiting the user to click on the button "Play"
+	 */
 	public void waitMenu() {
 		while(!this.hasInput) {
 			try {
@@ -68,6 +78,10 @@ public class GameMenu extends JPanel {
 		}
 	}
 	
+	/**
+	 * Retrieve the names of the Players
+	 * @return Names of the Players
+	 */
 	public String[] getPlayers() {
 		String[] playerNames = new String[this.nPlayers];
 		
@@ -78,6 +92,9 @@ public class GameMenu extends JPanel {
 		return playerNames;
 	}
 	
+	/**
+	 * Function that is used to display the panels of the Menu to be displayed
+	 */
 	public void setupMenu() {
 		this.setLayout(null);
 		this.setPreferredSize(this.menuDimension);
@@ -91,6 +108,9 @@ public class GameMenu extends JPanel {
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Function that is used to display the title of the Menu
+	 */
 	public void setupTitle() {
 		this.titleLabel = new JLabel("Ludo King");
 		this.titleLabel.setFont(new Font("Arial", Font.BOLD, 40));
@@ -110,6 +130,9 @@ public class GameMenu extends JPanel {
 		this.add(this.titleLabel);
 	}
 	
+	/**
+	 * Function that is used to display the center of the Menu
+	 */
 	public void setupMenuCenter() {
 		this.menuCenter = new JPanel();
 		this.menuCenter.setLayout(null);
@@ -135,6 +158,9 @@ public class GameMenu extends JPanel {
 		this.add(menuCenter);
 	}
 	
+	/**
+	 * Function that is used to display the Panel that contains the input for the number of players
+	 */
 	public void setupNumberPanel() {
 		this.numberPanel = new JPanel();
 		this.numberPanel.setLayout(null);
@@ -156,6 +182,9 @@ public class GameMenu extends JPanel {
 		this.menuCenter.add(this.numberPanel);
 	}
 	
+	/**
+	 * Function that is used to display the Label that contains the text of the request to input the number of players
+	 */
 	public void setupNumberLabel() {
 		this.numberLabel = new JLabel("Number of Players:");
 		numberLabel.setFont(new Font("Arial", Font.BOLD, 15));
@@ -171,20 +200,12 @@ public class GameMenu extends JPanel {
 		this.numberPanel.add(this.numberLabel);
 	}
 	
+	/**
+	 * Function that is used to display the input field to input the number of players
+	 */
 	public void setupNumberField() {
 		SpinnerModel fieldModel = new SpinnerNumberModel(MIN_PLAYERS, MIN_PLAYERS, MAX_PLAYERS, 1);
 		this.numberField = new JSpinner(fieldModel);
-		
-		/*JSpinner spinner2 = new JSpinner(model) {
-		    @Override public void updateUI() {
-		      super.updateUI();
-		      setUI(new BasicSpinnerUI() {
-		        @Override protected LayoutManager createLayout() {
-		          return new SpinnerLayout();
-		        }
-		      });
-		    }
-		  };*/
 		
 		this.numberField.addChangeListener(new ChangeListener() {
             @Override
@@ -212,6 +233,9 @@ public class GameMenu extends JPanel {
 		this.numberPanel.add(this.numberField);
 	}
 	
+	/**
+	 * Function that is used to display the Panel to show the list of players
+	 */
 	public void setupPlayerList() {
 		this.playerList = new JPanel();
 		this.playerList.setLayout(null);
@@ -241,6 +265,10 @@ public class GameMenu extends JPanel {
 		this.menuCenter.add(this.playerList);
 	}
 	
+	/**
+	 * Function that is used to display the Panel to show a single player input
+	 * @param playerIndex Index of the player
+	 */
 	public void setupPlayerPanel(int playerIndex) {
 		JPanel playerPanel = new JPanel();
 		playerPanel.setLayout(null);
@@ -265,6 +293,10 @@ public class GameMenu extends JPanel {
 		this.setupPlayerField(playerIndex);
 	}
 	
+	/**
+	 * Function that is used to display the panel to show the player color
+	 * @param playerIndex Index of the player
+	 */
 	public void setupPlayerColor(int playerIndex) {
 		JPanel panelColor = new JPanel();
 		
@@ -284,6 +316,10 @@ public class GameMenu extends JPanel {
 		this.playerPanels[playerIndex].add(panelColor);
 	}
 	
+	/**
+	 * Function that is used to display the field to input the player's name
+	 * @param playerIndex Index of the player
+	 */
 	public void setupPlayerField(int playerIndex) {
 		JTextField playerField = new JTextField();
 
@@ -306,6 +342,9 @@ public class GameMenu extends JPanel {
 		this.playerPanels[playerIndex].add(playerField);
 	}
 	
+	/**
+	 * Function that is used to display the players list
+	 */
 	public void showPlayers() {
 		for(int playerIndex = 0; playerIndex < this.MAX_PLAYERS; playerIndex++) {
 			if(playerIndex < this.nPlayers) {
@@ -318,6 +357,9 @@ public class GameMenu extends JPanel {
 		}
 	}
 	
+	/**
+	 * Function that is used to display the "Play" Button
+	 */
 	public void setupPlayButton() {
 		this.playButton = new JButton("PLAY");
 		

@@ -7,19 +7,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+/**
+ * Class that is used to manage the Dice functions
+ */
 public class Dice extends JPanel implements MouseListener {
 	private int diceValue;
 	private boolean diceRoll;
 	private final JPanel turnPanel;
-	
-	/*public final int[][][] pointPositions = {
-		{ {11, 11} },
-		{ {4, 4}, {18, 18} },
-		{ {4, 4}, {11, 11}, {18, 18} },
-		{ {4, 4}, {18, 4}, {4, 18}, {18, 18} },
-		{ {4, 4}, {18, 4}, {11, 11}, {4, 18}, {18, 18} },
-		{ {4, 4}, {18, 4}, {4, 11}, {18, 11}, {4, 18}, {18, 18} },
-	};*/
 	
 	public final int[][][] pointPositions = {
 		{ {11, 11} },
@@ -30,6 +24,10 @@ public class Dice extends JPanel implements MouseListener {
 		{ {5, 5}, {17, 5}, {5, 11}, {17, 11}, {5, 17}, {17, 17} },
 	};
 	
+	/**
+	 * Creates a new instance of Dice
+	 * @param turnPanel Panel used by the Player to show his turn
+	 */
 	public Dice(JPanel turnPanel) { 
 		this.diceValue = 0;
 		this.diceRoll = false;
@@ -38,6 +36,10 @@ public class Dice extends JPanel implements MouseListener {
 		this.setupDice();
 	}
 	
+	/**
+	 * Creates a new instance of Dice
+	 * @param diceValue Value to set to the Dice
+	 */
 	public Dice(int diceValue) {
 		this.diceValue = diceValue;
 		this.diceRoll = false;
@@ -46,6 +48,9 @@ public class Dice extends JPanel implements MouseListener {
 		this.setupDice();
 	}
 	
+	/**
+	 * Function that setup the Dice display
+	 */
 	public void setupDice() {
 		Border turnBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
 		this.setBorder(turnBorder);
@@ -60,6 +65,9 @@ public class Dice extends JPanel implements MouseListener {
 		this.addMouseListener(this);
 	}
 	
+	/**
+	 * Function used to display the Dice
+	 */
 	public void drawDice() {
 		this.removeAll();
 		
@@ -81,6 +89,9 @@ public class Dice extends JPanel implements MouseListener {
 		this.repaint();
 	}
 	
+	/**
+	 * Function used to roll the Dice and display it
+	 */
 	public void rollDice() {
 		Random rnd = new Random();
 		this.setValue(rnd.nextInt(6) + 1);
@@ -88,15 +99,26 @@ public class Dice extends JPanel implements MouseListener {
 		this.drawDice();
 	}
 	
+	/**
+	 * Function used to set the value to the Dice
+	 */
 	public void setValue(int diceValue) {
 		this.diceValue = diceValue;
 		this.diceRoll = true;
 	}
 	
+	/**
+	 * Function used to retrieve the value of the Dice
+	 * @return Value of the Dice
+	 */
 	public int getValue() {
 		return this.diceValue;
 	}
 
+	/**
+	 * Function used to manage a click on the Dice
+	 * @param e MouseEvent object to manage the mouse click
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(!this.diceRoll) {

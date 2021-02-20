@@ -14,6 +14,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+/**
+ * List of the Cell Colors
+ */
 enum CellColor {
 	Blue,
 	Red, 
@@ -22,6 +25,9 @@ enum CellColor {
 	White
 };
 
+/**
+ * List of the Cell Types
+ */
 enum CellType {
 	Open,
 	Star,
@@ -29,6 +35,9 @@ enum CellType {
 	End
 };
 
+/**
+ * Class used to run the Game
+ */
 public class Launcher extends JFrame {
 	private final char[] playerCodes = {'B', 'R', 'G', 'Y'};
 	
@@ -42,12 +51,13 @@ public class Launcher extends JFrame {
 	private Player[] players;
 	private String[] playerNames;
 	
-	/* CHANGE */
 	private GameMenu gameMenu;
 	private GameBoard gameBoard;
 	private GameStatus gameStatus;
 	
-	/* CHANGE */
+	/**
+	 * Creates an instance of the Launcher class
+	 */
 	public Launcher() {	
 		this.setupFrame();
 		
@@ -55,7 +65,10 @@ public class Launcher extends JFrame {
 		this.runGame();
 	}
 	
-	/* CHANGE */
+	/**
+	 * Function that retrieves the number of players that have won
+	 * @return Number of players that have won
+	 */
 	public int playersWon() {
 		int playerCounter = 0;
 		
@@ -68,11 +81,17 @@ public class Launcher extends JFrame {
 		return playerCounter;
 	}
 	
+	/**
+	 * Function that checks whether the game is finished or not
+	 * @return Returns true if the game is finished, otherwise it returns false
+	 */
 	public boolean isFinished() {
 		return this.playersWon() >= (this.nPlayers - 1);
 	}
 	
-	/* CHANGE */
+	/**
+	 * Function used to display the Menu of the Game 
+	 */
 	public void runMenu() {
 		this.gameMenu = new GameMenu(new Dimension(600, 600));
 		this.add(this.gameMenu);
@@ -88,7 +107,9 @@ public class Launcher extends JFrame {
 		this.remove(this.gameMenu);
 	}
 	
-	/* CHANGE */
+	/**
+	 * Function used to display the Board of the Game
+	 */
 	public void runGame() {
 		this.setupGame();
 		this.gameBoard = new GameBoard(this.players, this.openCells, this.closeCells);
@@ -120,7 +141,9 @@ public class Launcher extends JFrame {
 		}
 	}
 	
-	/* CHANGE */
+	/**
+	 * Function that is used to setup the Frame
+	 */
 	public void setupFrame() {
 		this.setTitle("Ludo King");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
@@ -136,6 +159,9 @@ public class Launcher extends JFrame {
 		}
 	}
 	
+	/**
+	 * Function used to setup the variables to make the game run
+	 */
 	public void setupGame() {
 		this.openCells = new Cell[OPEN_CELLS];
 		this.closeCells = new Cell[MAX_PLAYERS][6];
@@ -146,6 +172,9 @@ public class Launcher extends JFrame {
 		this.setupFrame();
 	}
 	
+	/**
+	 * Function used to setup the cells used by the logic of the Game
+	 */
 	public void setupCells() {
 		for(int p = 0; p < MAX_PLAYERS; p++) {
 			this.closeCells[p] = new Cell[6];
@@ -177,7 +206,9 @@ public class Launcher extends JFrame {
 		}
 	}
 	
-	/* CHANGE */
+	/**
+	 * Function that is used to setup the Players classes that are used by the logic of the Game
+	 */
 	public void setupPlayers() {
 		for(int playerIndex = 0; playerIndex < nPlayers; playerIndex++) {
 			Cell[] playerCells = new Cell[57];
@@ -198,6 +229,9 @@ public class Launcher extends JFrame {
 		}
 	}
 	
+	/**
+	 * Function that is used to print the cells on the console
+	 */
 	public void printCells() {
 		for(int c = 0; c < OPEN_CELLS; c++) {
 			System.out.println("Cell #" + c + ", Color: " + openCells[c].getColor() + ", Type: " + openCells[c].getType());
@@ -224,6 +258,10 @@ public class Launcher extends JFrame {
 		System.out.println();
 	}
 	
+	/**
+	 * Main function used to run the entire program
+	 * @param args Command Line arguments - in this case they are ignored by the program
+	 */
 	public static void main(String[] args) {	
 		Launcher launcher = new Launcher();
 	}

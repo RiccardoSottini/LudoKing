@@ -8,11 +8,20 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+/**
+ * Class that is used to show a single Base Cell of the player
+ */
 public class CellBase extends JPanel implements MouseListener {
 	private final Dimension cellDimension;
 	private final Point cellPosition;
 	private final Pawn cellPawn;
 	
+	/**
+	 * Creates a new instance of CellBase
+	 * @param cellDimension Dimension of the Cell
+	 * @param cellPosition Position of the Cell
+	 * @param cellPawn Pawn that is contained in this Cell
+	 */
 	public CellBase(Dimension cellDimension, Point cellPosition, Pawn cellPawn) {
 		this.cellDimension = cellDimension;
 		this.cellPosition = cellPosition;
@@ -22,6 +31,9 @@ public class CellBase extends JPanel implements MouseListener {
 		this.addMouseListener(this);
 	}
 	
+	/**
+	 * Function that setup the Base Cell display
+	 */
 	public void setupCell() {
 		this.setLayout(null);
 		this.setSize(this.cellDimension);
@@ -35,6 +47,9 @@ public class CellBase extends JPanel implements MouseListener {
 		this.setVisible(true);
 	}
 
+	/**
+	 * Function that draw the pawn contained in the Base Cell
+	 */
 	public void drawPawn() {
 		if(this.cellPawn.getPosition() == -1) {
 			this.removeAll();
@@ -55,6 +70,10 @@ public class CellBase extends JPanel implements MouseListener {
 		}
 	}
 	
+	/**
+	 * Function used to manage the selection of a Pawn
+	 * @param e MouseEvent object to manage the mouse click
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Player cellPlayer = this.cellPawn.getPlayer();
