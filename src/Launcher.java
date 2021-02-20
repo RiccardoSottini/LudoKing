@@ -39,7 +39,7 @@ public class Launcher {
 		this.setupCells();
 		this.setupPlayers();
 		
-		for(int d = 0; d < 20; d++) {
+		for(int d = 0; d < 5; d++) {
 			for(int p = 0; p < nPlayers; p++) {
 				int nDice = (d * nPlayers) + p;
 				int diceValue = this.players[p].playDice().getValue();

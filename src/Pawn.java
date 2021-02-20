@@ -2,6 +2,7 @@ public class Pawn {
 	private final int pawnCode;
 	private final Color pawnColor;
 	private boolean pawnStatus;
+	private boolean pawnWon;
 	private int pawnPosition;
 	
 	private final Player player;
@@ -11,6 +12,7 @@ public class Pawn {
 		this.pawnCode = pawnCode;
 		this.pawnColor = pawnColor;
 		this.pawnStatus = false;
+		this.pawnWon = false;
 		this.pawnPosition = -1;
 		
 		this.player = player;
@@ -47,13 +49,21 @@ public class Pawn {
 	}
 	
 	public boolean isPossible(int changePosition) {
-		int newPosition = this.pawnPosition + changePosition;
-		
-		if(this.getStatus() == false) {
-			return changePosition == 6 && newPosition <= 56;
+		if(!this.hasWon()) {
+			int newPosition = this.pawnPosition + changePosition;
+			
+			if(this.getStatus()) {
+				if(newPosition <= 56) {
+					return true;
+				}
+			} else {
+				if(changePosition == 6) {
+					return true;
+				}
+			}
 		}
 		
-		return true;
+		return false;
 	}
 	
 	public void setStatus(boolean pawnStatus) {
@@ -62,6 +72,14 @@ public class Pawn {
 	
 	public boolean getStatus() {
 		return this.pawnStatus;
+	}
+	
+	public void setWon(boolean pawnWon) {
+		this.pawnWon = pawnWon;
+	}
+	
+	public boolean hasWon() {
+		return this.pawnWon;
 	}
 	
 	public int addPosition(int changePosition) {
@@ -77,6 +95,9 @@ public class Pawn {
 			
 			if(this.getPosition() == 56) {
 				this.setStatus(false);
+				this.setWon(true);
+				
+				this.player.checkWon();
 			}
 		}
 		

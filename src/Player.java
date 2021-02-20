@@ -4,6 +4,7 @@ public class Player {
 	private final Cell[] playerCells;
 	private final char playerCode;
 	private final Color playerColor;
+	private boolean playerWon;
 	
 	private final Pawn[] pawns;
 	
@@ -13,6 +14,7 @@ public class Player {
 		this.playerCells = playerCells;
 		this.playerCode = playerCode;
 		this.playerColor = playerColor;
+		this.playerWon = false;
 		
 		this.pawns = new Pawn[4];
 		
@@ -52,5 +54,25 @@ public class Player {
 	
 	public char getCode() {
 		return this.playerCode;
+	}
+	
+	public void checkWon() {
+		int counter = 0;
+		
+		for(Pawn pawn : this.pawns) {
+			if(pawn.hasWon()) {
+				counter++;
+			}
+		}
+		
+		this.playerWon = counter == 4;
+		
+		if(this.playerWon) {
+			System.out.println("Player " + this.getCode() + " has won!");
+		}
+	}
+	
+	public boolean hasWon() {
+		return this.playerWon;
 	}
 }

@@ -28,6 +28,7 @@ public class Cell {
 				
 				if(comparedPawn.getPlayerCode() != selectedPawn.getPlayerCode()) {
 					System.out.println("Pawn Killed: " + comparedPawn.getCode());
+					comparedPawn.setDead();
 					this.removePawn(comparedPawn);
 				}
 			}
