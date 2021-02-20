@@ -1,10 +1,12 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
@@ -21,9 +23,12 @@ public class Player {
 	private final Cell[] playerCells;
 	private final char playerCode;
 	private final CellColor playerColor;
-	private JPanel playerLabel;
 	private boolean playerKill;
 	private boolean playerWon;
+	
+	/* CHANGE */
+	private JPanel playerLabel;
+	private JLabel playerLabelName;
 	
 	private final Pawn[] pawns;
 	private Pawn pawnSelected = null;
@@ -103,18 +108,28 @@ public class Player {
 		}
 	}
 	
+	/* CHANGE */
 	public void setupLabel(Dimension labelDimension, Point labelPosition, JPanel playerList) {
 		this.playerLabel = new JPanel();
-		this.turnPanel = new JPanel();
+		this.playerLabel.setLayout(null);
 		
 		Border labelBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
 		this.playerLabel.setBorder(labelBorder);
 		this.playerLabel.setBackground(colors[this.playerColor.ordinal()]);
-	
+		
+		this.setupLabelTurn(labelDimension);
+		this.setupLabelName(labelDimension);
+		
 		this.playerLabel.setSize(labelDimension);
 		this.playerLabel.setLocation(labelPosition);
-		this.playerLabel.setLayout(null);
 		this.playerLabel.setVisible(true);
+		
+		playerList.add(this.playerLabel);
+	}
+	
+	/* CHANGE */
+	public void setupLabelTurn(Dimension labelDimension) {
+		this.turnPanel = new JPanel();
 		
 		Border turnBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
 		this.turnPanel.setBorder(turnBorder);
@@ -126,7 +141,23 @@ public class Player {
 		this.turnPanel.setVisible(true);
 		
 		this.playerLabel.add(this.turnPanel);
-		playerList.add(this.playerLabel);
+	}
+	
+	/* CHANGE */
+	public void setupLabelName(Dimension labelDimension) {
+		this.playerLabelName = new JLabel(this.playerName);
+		this.playerLabelName.setFont(new Font("Arial", Font.PLAIN, 15));
+		
+		int labelSize = labelDimension.height - 20;
+		int labelWidth = labelDimension.width - labelSize - 30;
+		int labelHeight = labelSize;
+		this.playerLabelName.setSize(labelWidth, labelHeight);
+		
+		int labelPositionY = 10;
+		this.playerLabelName.setLocation(labelPositionX, labelPositionY);
+		
+		this.playerLabelName.setVisible(true);
+		this.playerLabel.add(this.playerLabelName);
 	}
 	
 	public boolean isPlayerTurn() {

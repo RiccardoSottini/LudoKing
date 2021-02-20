@@ -35,26 +35,19 @@ public class Launcher extends JFrame {
 	
 	private int nPlayers;
 	private Player[] players;
+	private String[] playerNames;
 	
+	/* CHANGE */
+	private GameMenu gameMenu;
 	private GameBoard gameBoard;
 	private GameStatus gameStatus;
 	
-	public Launcher(int nPlayers) {	
-		this.openCells = new Cell[OPEN_CELLS];
-		this.closeCells = new Cell[MAX_PLAYERS][6];
-		
-		this.nPlayers = nPlayers;
-		this.players = new Player[nPlayers];
-		
-		this.setupCells();
-		this.setupPlayers();
+	/* CHANGE */
+	public Launcher() {	
 		this.setupFrame();
 		
-		while(!this.isFinished()) {
-			for(int p = 0; p < nPlayers; p++) {
-				this.players[p].playerPlay();
-			}
-		}
+		this.runMenu();
+		this.runGame();
 	}
 	
 	public boolean isFinished() {
@@ -69,22 +62,60 @@ public class Launcher extends JFrame {
 		return playerCounter == (nPlayers - 1);
 	}
 	
-	public void setupFrame() {
-		this.setTitle("Ludo King");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
-		this.setResizable(false);                              
-		this.setLocationRelativeTo(null);
+	/* CHANGE */
+	public void runMenu() {
+		this.gameMenu = new GameMenu(new Dimension(600, 600));
+		this.add(this.gameMenu);
 		
+		this.pack();
+		this.setVisible(true);
+		
+		this.gameMenu.waitMenu();
+		this.playerNames = this.gameMenu.getPlayers();
+		this.nPlayers = this.playerNames.length;
+		
+		this.setVisible(false);
+		this.remove(this.gameMenu);
+	}
+	
+	/* CHANGE */
+	public void runGame() {
+		this.setupGame();
 		this.gameBoard = new GameBoard(this.players, this.openCells, this.closeCells);
 		
-		Dimension statusSize = new Dimension(200, this.gameBoard.getFrameHeight());
+		Dimension statusDimension = new Dimension(200, this.gameBoard.getFrameHeight());
 		Point statusPosition = new Point(this.gameBoard.getFrameWidth(), 0);
-		this.gameStatus = new GameStatus(this.players, statusSize, statusPosition);
+		this.gameStatus = new GameStatus(this.players, statusDimension, statusPosition);
+		
 		this.add(this.gameBoard, BorderLayout.WEST);
 		this.add(this.gameStatus, BorderLayout.EAST);
 		
 		this.pack();
 		this.setVisible(true);
+		
+		while(!this.isFinished()) {
+			for(int p = 0; p < nPlayers; p++) {
+				this.players[p].playerPlay();
+			}
+		}
+	}
+	
+	/* CHANGE */
+	public void setupFrame() {
+		this.setTitle("Ludo King");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
+		this.setResizable(false);                              
+		this.setLocationRelativeTo(null);
+	}
+	
+	public void setupGame() {
+		this.openCells = new Cell[OPEN_CELLS];
+		this.closeCells = new Cell[MAX_PLAYERS][6];
+		this.players = new Player[nPlayers];
+		
+		this.setupCells();
+		this.setupPlayers();
+		this.setupFrame();
 	}
 	
 	public void setupCells() {
@@ -118,23 +149,24 @@ public class Launcher extends JFrame {
 		}
 	}
 	
+	/* CHANGE */
 	public void setupPlayers() {
-		for(int p = 0; p < nPlayers; p++) {
+		for(int playerIndex = 0; playerIndex < nPlayers; playerIndex++) {
 			Cell[] playerCells = new Cell[57];
-			char playerCode = playerCodes[p];
-			CellColor playerColor = CellColor.values()[p];
+			char playerCode = playerCodes[playerIndex];
+			CellColor playerColor = CellColor.values()[playerIndex];
 			
 			for(int c = 0; c <= 50; c++) {
-				int cellIndex = ((p * 13) + c) % 52;
+				int cellIndex = ((playerIndex * 13) + c) % 52;
 				playerCells[c] = this.openCells[cellIndex];
 			}
 			
 			for(int c = 0; c < 6; c++) {
 				int cellIndex = c + 51;
-				playerCells[cellIndex] = this.closeCells[p][c];
+				playerCells[cellIndex] = this.closeCells[playerIndex][c];
 			}
 			
-			this.players[p] = new Player("test", playerCells, playerCode, playerColor);
+			this.players[playerIndex] = new Player(this.playerNames[playerIndex], playerCells, playerCode, playerColor);
 		}
 	}
 	
@@ -164,9 +196,7 @@ public class Launcher extends JFrame {
 		System.out.println();
 	}
 	
-	public static void main(String[] args) {
-		int nPlayers = 2;
-		
-		Launcher launcher = new Launcher(nPlayers);
+	public static void main(String[] args) {	
+		Launcher launcher = new Launcher();
 	}
 }
