@@ -25,6 +25,8 @@ public class Cell extends JPanel implements MouseListener  {
 		Color.WHITE
 	};
 	
+	private final char[] playerCodes = {'B', 'R', 'G', 'Y'};
+	
 	private final Color borderColor = Color.BLACK;
 	
 	private final double[][][] endPositions = {
@@ -275,20 +277,42 @@ public class Cell extends JPanel implements MouseListener  {
 		boolean hasKilled = false;
 		
 		if(this.canKill()) {
-			for(int p = 0; p < this.pawns.size(); p++) {
-				Pawn comparedPawn = this.pawns.get(p);
+			int[] playerPawns = new int[4];
+			
+			for(int playerIndex = 0; playerIndex < this.playerCodes.length; playerIndex++) {
+				playerPawns[playerIndex] = 0;
 				
-				if(comparedPawn.getPlayerCode() != selectedPawn.getPlayerCode()) {
-					System.out.println("Pawn Killed: " + comparedPawn.getCode());
-					
-					comparedPawn.setDead();
-					this.removePawn(comparedPawn, false);
-					
-					hasKilled = true;
+				for(Pawn comparedPawn : this.pawns) {
+					if(comparedPawn.getPlayerCode() == playerCodes[playerIndex]) {
+						playerPawns[playerIndex]++;
+					}
 				}
 			}
 			
-			this.drawPawns();
+			boolean playerKill = true;
+			
+			for(int playerIndex = 0; playerIndex < playerPawns.length; playerIndex++) {
+				if(playerPawns[playerIndex] > 1) {
+					playerKill = false;
+					break;
+				}
+			}
+			
+			if(playerKill) {
+				for(int p = 0; p < this.pawns.size(); p++) {
+					Pawn comparedPawn = this.pawns.get(p);
+					
+					if(comparedPawn.getPlayerCode() != selectedPawn.getPlayerCode()) {
+						comparedPawn.setDead();
+						this.removePawn(comparedPawn, false);
+						
+						hasKilled = true;
+					}
+				}
+			
+
+				this.drawPawns();
+			}
 		}
 		
 		return hasKilled;

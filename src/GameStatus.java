@@ -1,8 +1,10 @@
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Point;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
@@ -26,7 +28,7 @@ public class GameStatus extends JPanel {
 		this.setLocation(this.panelPosition.x, this.panelPosition.y);
 		this.setLayout(null);
 		
-		Border panelBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
+		Border panelBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
 		this.setBorder(panelBorder);
 		
 		this.setBackground(Color.decode("#A9A9A9"));
@@ -60,5 +62,24 @@ public class GameStatus extends JPanel {
 		}
 		
 		this.add(this.playerList);
+	}
+	
+	public void setFinished() {
+		JLabel finishedLabel = new JLabel("The Game is Ended");
+		
+		finishedLabel.setFont(new Font("Arial", Font.BOLD, 14));
+		finishedLabel.setHorizontalAlignment(JLabel.CENTER);
+		
+		int labelWidth = (int)(this.panelSize.width * 0.75);
+		int labelHeight = 30;
+		int labelOffset = (int)(this.panelSize.width * 0.125);
+		finishedLabel.setSize(labelWidth, labelHeight);
+		int labelPositionX = labelOffset;
+		int labelPositionY = this.playerList.getHeight() + (labelOffset * 2);
+		finishedLabel.setLocation(labelPositionX, labelPositionY);
+		finishedLabel.setVisible(true);
+		
+		this.add(finishedLabel);
+		this.repaint();
 	}
 }

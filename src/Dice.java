@@ -55,6 +55,7 @@ public class Dice extends JPanel implements MouseListener {
 		this.setLocation(2, 2);
 		this.setOpaque(true);
 		this.setVisible(true);
+		this.setLayout(null);
 		
 		this.addMouseListener(this);
 	}
@@ -71,6 +72,7 @@ public class Dice extends JPanel implements MouseListener {
 			dicePoint.setLocation(pointList[p][0], pointList[p][1]);
 			dicePoint.setBackground(Color.BLACK);
 			dicePoint.setOpaque(true);
+			dicePoint.setLayout(null);
 			dicePoint.setVisible(true);
 			
 			this.add(dicePoint);

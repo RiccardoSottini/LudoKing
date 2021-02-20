@@ -50,7 +50,8 @@ public class Launcher extends JFrame {
 		this.runGame();
 	}
 	
-	public boolean isFinished() {
+	/* CHANGE */
+	public int playersWon() {
 		int playerCounter = 0;
 		
 		for(Player player : this.players) {
@@ -59,7 +60,11 @@ public class Launcher extends JFrame {
 			}
 		}
 		
-		return playerCounter == (nPlayers - 1);
+		return playerCounter;
+	}
+	
+	public boolean isFinished() {
+		return this.playersWon() >= (this.nPlayers - 1);
 	}
 	
 	/* CHANGE */
@@ -94,9 +99,19 @@ public class Launcher extends JFrame {
 		this.setVisible(true);
 		
 		while(!this.isFinished()) {
-			for(int p = 0; p < nPlayers; p++) {
+			for(int p = 0; p < this.nPlayers && !this.isFinished(); p++) {
 				this.players[p].playerPlay();
 			}
+		}
+		
+		if(this.isFinished()) {
+			for(Player player : this.players) {
+				if(!player.hasWon()) {
+					player.setLoseLabel();
+				}
+			}
+			
+			this.gameStatus.setFinished();
 		}
 	}
 	
@@ -166,7 +181,7 @@ public class Launcher extends JFrame {
 				playerCells[cellIndex] = this.closeCells[playerIndex][c];
 			}
 			
-			this.players[playerIndex] = new Player(this.playerNames[playerIndex], playerCells, playerCode, playerColor);
+			this.players[playerIndex] = new Player(this.playerNames[playerIndex], playerCells, playerCode, playerColor, this);
 		}
 	}
 	

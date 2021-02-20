@@ -5,6 +5,8 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -33,6 +35,7 @@ public class GameMenu extends JPanel {
 	
 	private final Dimension menuDimension;
 	
+	private JLabel titleLabel;
 	private JPanel menuCenter;
 	
 	private JPanel numberPanel;
@@ -80,10 +83,31 @@ public class GameMenu extends JPanel {
 		this.setPreferredSize(this.menuDimension);
 		this.setLocation(0, 0);
 		
+		this.setupTitle();
 		this.setupMenuCenter();
 		
+		this.setBackground(Color.decode("#CDCBCB"));
 		this.setOpaque(true);
 		this.setVisible(true);
+	}
+	
+	public void setupTitle() {
+		this.titleLabel = new JLabel("Ludo King");
+		this.titleLabel.setFont(new Font("Arial", Font.BOLD, 40));
+		
+		int titleWidth = (int) (this.menuDimension.width * 0.5);
+		int titleHeight = 50;
+		this.titleLabel.setSize(titleWidth, titleHeight);
+		
+		int titlePositionX = (this.menuDimension.width - titleWidth) / 2;
+		int titlePositionY = 15;
+		this.titleLabel.setLocation(titlePositionX, titlePositionY);
+		
+		this.titleLabel.setHorizontalAlignment(JFormattedTextField.CENTER);
+		this.titleLabel.setForeground(Color.BLACK);
+		
+		this.titleLabel.setVisible(true);
+		this.add(this.titleLabel);
 	}
 	
 	public void setupMenuCenter() {
@@ -95,12 +119,12 @@ public class GameMenu extends JPanel {
 		this.menuCenter.setSize(centerWidth, centerHeight);
 		
 		int centerPositionX = (this.menuDimension.width - centerWidth) / 2;
-		int centerPositionY = (this.menuDimension.height - centerHeight) / 2;
+		int centerPositionY = (this.menuDimension.height - centerHeight) / 2 + 20;
 		this.menuCenter.setLocation(centerPositionX, centerPositionY);
 		
-		Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
+		Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
 		this.menuCenter.setBorder(cellBorder);
-		this.menuCenter.setBackground(Color.WHITE);
+		this.menuCenter.setBackground(Color.decode("#2F6489"));
 		
 		this.setupNumberPanel();
 		this.setupPlayerList();
@@ -120,9 +144,9 @@ public class GameMenu extends JPanel {
 		this.numberPanel.setSize(panelWidth, panelHeight);
 		this.numberPanel.setLocation(20, 20);
 		
-		Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
+		Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
 		this.numberPanel.setBorder(cellBorder);
-		this.numberPanel.setBackground(Color.WHITE);
+		this.numberPanel.setBackground(Color.decode("#EBC436"));
 
 		this.setupNumberField();
 		this.setupNumberLabel();
@@ -134,12 +158,14 @@ public class GameMenu extends JPanel {
 	
 	public void setupNumberLabel() {
 		this.numberLabel = new JLabel("Number of Players:");
-		numberLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+		numberLabel.setFont(new Font("Arial", Font.BOLD, 15));
 		
 		int labelWidth = (this.numberPanel.getWidth() - this.numberField.getWidth()) - 50;
 		int labelHeight = 30;
 		this.numberLabel.setSize(labelWidth, labelHeight);
 		this.numberLabel.setLocation(20, 10);
+		
+		this.numberLabel.setBackground(Color.decode("#EBC436"));
 		
 		this.numberLabel.setVisible(true);
 		this.numberPanel.add(this.numberLabel);
@@ -148,6 +174,17 @@ public class GameMenu extends JPanel {
 	public void setupNumberField() {
 		SpinnerModel fieldModel = new SpinnerNumberModel(MIN_PLAYERS, MIN_PLAYERS, MAX_PLAYERS, 1);
 		this.numberField = new JSpinner(fieldModel);
+		
+		/*JSpinner spinner2 = new JSpinner(model) {
+		    @Override public void updateUI() {
+		      super.updateUI();
+		      setUI(new BasicSpinnerUI() {
+		        @Override protected LayoutManager createLayout() {
+		          return new SpinnerLayout();
+		        }
+		      });
+		    }
+		  };*/
 		
 		this.numberField.addChangeListener(new ChangeListener() {
             @Override
@@ -167,7 +204,7 @@ public class GameMenu extends JPanel {
 		this.numberField.setLocation(fieldPositionX, fieldPositionY);
 		
 		JFormattedTextField numberText = ((JSpinner.DefaultEditor) this.numberField.getEditor()).getTextField();
-		numberText.setFont(new Font("Arial", Font.PLAIN, 14));
+		numberText.setFont(new Font("Arial", Font.BOLD, 14));
 		numberText.setHorizontalAlignment(JFormattedTextField.CENTER);
 		numberText.setEditable(false);
 		numberText.setBackground(Color.WHITE);
@@ -187,9 +224,9 @@ public class GameMenu extends JPanel {
 		int listPositionY = this.numberPanel.getHeight() + 40;
 		this.playerList.setLocation(listPositionX, listPositionY);
 		
-		Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
+		Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
 		this.playerList.setBorder(cellBorder);
-		this.playerList.setBackground(Color.WHITE);
+		this.playerList.setBackground(Color.decode("#B18E56"));
 		
 		this.playerPanels = new JPanel[MAX_PLAYERS];
 		this.playerFields = new JTextField[MAX_PLAYERS];
@@ -218,7 +255,7 @@ public class GameMenu extends JPanel {
 		
 		Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
 		playerPanel.setBorder(cellBorder);
-		playerPanel.setBackground(Color.WHITE);
+		playerPanel.setBackground(Color.decode("#EBC436"));
 		playerPanel.setVisible(false);
 		
 		this.playerPanels[playerIndex] = playerPanel;
@@ -239,6 +276,8 @@ public class GameMenu extends JPanel {
 		int panelPositionY = (this.playerPanels[playerIndex].getHeight() - panelHeight) / 2;
 		panelColor.setLocation(panelPositionX, panelPositionY);
 		
+		Border panelBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
+		panelColor.setBorder(panelBorder);
 		panelColor.setBackground(this.playerColors[playerIndex]);
 		panelColor.setVisible(true);
 		
@@ -258,9 +297,10 @@ public class GameMenu extends JPanel {
 		int fieldPositionX = fieldSize + (fieldOffset * 2);
 		int fieldPositionY = fieldOffset;
 		playerField.setLocation(fieldPositionX, fieldPositionY);
-		
+
+		Border fieldBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
 		Border fieldPadding = BorderFactory.createEmptyBorder(2, 6, 2, 6);
-		playerField.setBorder(BorderFactory.createCompoundBorder(playerField.getBorder(), fieldPadding));
+		playerField.setBorder(BorderFactory.createCompoundBorder(fieldBorder, fieldPadding));
 		
 		this.playerFields[playerIndex] = playerField;
 		this.playerPanels[playerIndex].add(playerField);
@@ -289,18 +329,42 @@ public class GameMenu extends JPanel {
 		int fieldPositionY = this.numberLabel.getHeight() + this.playerList.getHeight() + 80;
 		this.playButton.setLocation(fieldPositionX, fieldPositionY);
 		
-		this.playButton.setFont(new Font("Arial", Font.PLAIN, 14));
+		this.playButton.setFont(new Font("Arial", Font.BOLD, 16));
 		this.playButton.setHorizontalAlignment(JFormattedTextField.CENTER);
-		this.playButton.setBackground(Color.WHITE);
+		
+		Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
+		this.playButton.setBorder(cellBorder);
+		this.playButton.setOpaque(true);
+		this.playButton.setBackground(Color.decode("#EBC436"));
+		this.playButton.setFocusPainted(false);
 		
 		this.playButton.setVisible(true);
 		this.menuCenter.add(this.playButton);
 		
-		this.playButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	hasInput = true;
-            }
+		this.playButton.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) { 
+				hasInput = true;
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) { }
+
+			@Override
+			public void mouseReleased(MouseEvent e) { }
+			
+			@Override
+			public void mouseEntered(MouseEvent e) { 
+				Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
+				playButton.setBorder(cellBorder);
+				
+				playButton.setBackground(Color.decode("#B58E0F"));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) { 
+				playButton.setBackground(Color.decode("#EBC436"));
+			}
         });
 	}
 }

@@ -25,6 +25,7 @@ public class Player {
 	private final CellColor playerColor;
 	private boolean playerKill;
 	private boolean playerWon;
+	private int playerWonPosition;
 	
 	/* CHANGE */
 	private JPanel playerLabel;
@@ -40,13 +41,17 @@ public class Player {
 	private boolean turnPlayer;
 	private JPanel turnPanel;
 	
-	public Player(String playerName, Cell[] playerCells, char playerCode, CellColor playerColor) {
+	private final Launcher launcher;
+	
+	public Player(String playerName, Cell[] playerCells, char playerCode, CellColor playerColor, Launcher launcher) {
 		this.playerName = playerName;
 		this.playerCells = playerCells;
 		this.playerCode = playerCode;
 		this.playerColor = playerColor;
 		this.playerKill = false;
 		this.playerWon = false;
+		
+		this.launcher = launcher;
 		
 		this.pawns = new Pawn[4];
 		this.baseCells = new CellBase[4];
@@ -60,10 +65,11 @@ public class Player {
 	}
 	
 	public void playerPlay() {
+		this.checkWon();
+		
 		if(!this.hasWon()) {
 			do {
 				this.setTurn(true);
-				this.removePawnSelected();
 				
 				while(!this.hasDice()) {
 					try {
@@ -72,6 +78,8 @@ public class Player {
 					    e.printStackTrace();
 					}
 				}
+				
+				this.removePawnSelected();
 				
 				if(this.canMove()) {
 					while(!this.playMove()) {
@@ -130,6 +138,7 @@ public class Player {
 	/* CHANGE */
 	public void setupLabelTurn(Dimension labelDimension) {
 		this.turnPanel = new JPanel();
+		this.turnPanel.setLayout(null);
 		
 		Border turnBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
 		this.turnPanel.setBorder(turnBorder);
@@ -137,7 +146,6 @@ public class Player {
 		
 		this.turnPanel.setSize(labelDimension.height - 20, labelDimension.height - 20);
 		this.turnPanel.setLocation(10, 10);
-		this.turnPanel.setLayout(null);
 		this.turnPanel.setVisible(true);
 		
 		this.playerLabel.add(this.turnPanel);
@@ -153,6 +161,7 @@ public class Player {
 		int labelHeight = labelSize;
 		this.playerLabelName.setSize(labelWidth, labelHeight);
 		
+		int labelPositionX = labelSize + 20;
 		int labelPositionY = 10;
 		this.playerLabelName.setLocation(labelPositionX, labelPositionY);
 		
@@ -295,6 +304,7 @@ public class Player {
 		return killValue;
 	}
 	
+	/* CHANGE */
 	public void checkWon() {
 		int counter = 0;
 		
@@ -307,8 +317,47 @@ public class Player {
 		this.playerWon = counter == 4;
 		
 		if(this.playerWon) {
-			System.out.println("Player " + this.getCode() + " has won!");
+			this.playerWonPosition = this.launcher.playersWon();
+			
+			this.setWonLabel();
 		}
+	}
+
+	/* CHANGE */
+	public void setWonLabel() {
+		this.turnPanel.removeAll();
+		
+		Border labelBorder = BorderFactory.createLineBorder(Color.BLACK, 0);
+		this.turnPanel.setBorder(labelBorder);
+		this.turnPanel.setBackground(colors[this.playerColor.ordinal()]);
+		
+		JLabel winLabel = new JLabel(this.playerWonPosition + ".");
+		winLabel.setFont(new Font("Arial", Font.BOLD, 15));
+		winLabel.setHorizontalAlignment(JLabel.CENTER);
+		
+		winLabel.setSize(this.turnPanel.getWidth(), this.turnPanel.getHeight());
+		winLabel.setLocation(0, 0);
+		winLabel.setVisible(true);
+		
+		this.turnPanel.add(winLabel);
+		this.turnPanel.repaint();
+	}
+
+	/* CHANGE */
+	public void setLoseLabel() {
+		Border labelBorder = BorderFactory.createLineBorder(Color.BLACK, 0);
+		this.turnPanel.setBorder(labelBorder);
+		this.turnPanel.setBackground(colors[this.playerColor.ordinal()]);
+		
+		JLabel winLabel = new JLabel("Lost");
+		winLabel.setFont(new Font("Arial", Font.BOLD, 14));
+		winLabel.setHorizontalAlignment(JLabel.CENTER);
+		
+		winLabel.setSize(this.turnPanel.getWidth(), this.turnPanel.getHeight());
+		winLabel.setLocation(0, 0);
+		winLabel.setVisible(true);
+		
+		this.turnPanel.add(winLabel);
 	}
 	
 	public boolean hasWon() {
