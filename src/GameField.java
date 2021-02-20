@@ -15,8 +15,10 @@ public class GameField extends JFrame {
 		Color.RED,
 		Color.GREEN,
 		Color.YELLOW,
-		Color.WHITE
+		Color.BLACK
 	};
+	
+	private final Color borderColor = Color.BLACK;
 	
 	private final int[][] openPositions = {
 		{6, 13},	{6, 12},	{6, 11},	{6, 10}, 	{6, 9},
@@ -45,8 +47,8 @@ public class GameField extends JFrame {
 	};
 	
 	private final int nCells = 16;
-	private final int cellWidth = 40;
-	private final int cellHeight = 40;
+	private final int cellWidth = 46;
+	private final int cellHeight = 46;
 	
 	private final int baseWidth = cellWidth * 6;
 	private final int baseHeight = cellHeight * 6;
@@ -113,10 +115,6 @@ public class GameField extends JFrame {
 			boardPanel.add(this.setupBase(baseIndex));
 		}
 		
-		JPanel player1 = new JPanel();
-		//player1.setSize(d);
-		
-		
 		return boardPanel;
 	}
 	
@@ -129,7 +127,7 @@ public class GameField extends JFrame {
 		int positionY = basePositions[baseIndex][1] * cellHeight;
 		Point basePosition = new Point(positionX, positionY);
 		
-		Border baseBorder = BorderFactory.createLineBorder(Color.BLACK, 2);
+		Border baseBorder = BorderFactory.createLineBorder(this.borderColor, 2);
 		basePanel.setBorder(baseBorder);
 		basePanel.setBackground(colors[baseIndex]);
 		
@@ -152,7 +150,7 @@ public class GameField extends JFrame {
 		
 		System.out.println(centerPosition.x + ", " + centerPosition.y);
 		
-		Border centerBorder = BorderFactory.createLineBorder(Color.BLACK, 3);
+		Border centerBorder = BorderFactory.createLineBorder(this.borderColor, 3);
 		baseCenter.setBorder(centerBorder);
 		baseCenter.setBackground(Color.LIGHT_GRAY);
 		

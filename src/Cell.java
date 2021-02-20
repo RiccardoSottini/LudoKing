@@ -25,6 +25,8 @@ public class Cell extends JPanel implements MouseListener  {
 		Color.WHITE
 	};
 	
+	private final Color borderColor = Color.BLACK;
+	
 	private final double[][][] endPositions = {
 		{ {0.0, 1.0}, {1.0, 1.0}, {0.5, 0.0} },
 		{ {0.0, 0.0}, {0.0, 1.0}, {1.0, 0.5} },
@@ -36,7 +38,6 @@ public class Cell extends JPanel implements MouseListener  {
 	private final CellColor cellColor;
 	private final CellType cellType;
 	
-	//private JPanel cellPanel;
 	private Dimension cellDimension;
 	private Point cellPosition;
 	
@@ -69,6 +70,8 @@ public class Cell extends JPanel implements MouseListener  {
         if(this.cellType == CellType.End) {
         	Graphics2D graphics2D = (Graphics2D) g;
         	Shape triangleShape = this.createTriangle();
+        	
+        	graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         	graphics2D.setColor(colors[cellColor.ordinal()]);
         	graphics2D.fill(triangleShape);
@@ -83,16 +86,18 @@ public class Cell extends JPanel implements MouseListener  {
         		int x2 = (int) (cellDimension.width * endPositions[index][nextLine][0]);
         		int y2 = (int) (cellDimension.height * endPositions[index][nextLine][1]);
         		
-                graphics2D.setColor(Color.BLACK);
+                graphics2D.setColor(this.borderColor);
                 graphics2D.setStroke(new BasicStroke(2));
         		graphics2D.drawLine(x1, y1, x2, y2);
         	}
         }
     }
 	
-	public void drawCell(Dimension cellDimension, Point cellPosition, JPanel boardPanel) {
+	public void drawCell(Dimension cellDimension, Point cellPosition, JPanel boardPanel) {	
 		this.cellDimension = cellDimension;
 		this.cellPosition = cellPosition;
+		
+		this.drawPawns(boardPanel);
 		
 		if(this.cellType == CellType.End) {
 			int cellPositionX, cellPositionY;
@@ -117,7 +122,7 @@ public class Cell extends JPanel implements MouseListener  {
 			
 			this.setOpaque(false);
 		} else {
-			Border cellBorder = BorderFactory.createLineBorder(Color.BLACK, 1);
+			Border cellBorder = BorderFactory.createLineBorder(this.borderColor, 1);
 			this.setBorder(cellBorder);
 			
 			this.setBackground(colors[cellColor.ordinal()]);
@@ -129,6 +134,40 @@ public class Cell extends JPanel implements MouseListener  {
 		this.setVisible(true);
 		
 		boardPanel.add(this);
+	}
+	
+	public void drawPawns(JPanel boardPanel) {
+		for(int p = 0; p < this.pawns.size(); p++) {
+			Pawn pawn = this.pawns.get(p);
+			int pawnOffset;
+			Dimension pawnDimension;
+			Point pawnPosition;
+			
+			if(this.pawns.size() == 1) {
+				pawnOffset = 4;
+				
+				int pawnWidth = this.cellDimension.width - (this.cellDimension.width / 4) - 2;
+				int pawnHeight = this.cellDimension.height - (this.cellDimension.height / 4) - 2;
+				
+				pawnDimension = new Dimension(pawnWidth, pawnHeight);
+				pawnPosition = this.cellPosition;
+				
+				pawn.drawPawn(pawnDimension, pawnPosition, pawnOffset, boardPanel);
+			} else {
+				pawnOffset = 2;
+				
+				//int pawnWidth = this.cellDimension.width - (this.cellDimension.width / 4)
+				int pawnWidth = (this.cellDimension.width - 8) / 2;
+				int pawnHeight = (this.cellDimension.height - 8) / 2;
+				int pawnPositionX = this.cellPosition.x + ((p % 2 == 1) ? pawnWidth : 0);
+				int pawnPositionY = this.cellPosition.y + ((p >= 2) ? pawnHeight : 0);
+				
+				pawnDimension = new Dimension(pawnWidth, pawnHeight);
+				pawnPosition = new Point(pawnPositionX, pawnPositionY);
+				
+				pawn.drawPawn(pawnDimension, pawnPosition, pawnOffset, boardPanel);
+			}
+		}
 	}
 	
 	public boolean canKill() {
