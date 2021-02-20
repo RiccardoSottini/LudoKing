@@ -1,8 +1,7 @@
 import java.util.ArrayList;
 import java.util.Random;
 
-
-enum Color {
+enum CellColor {
 	Blue,
 	Red, 
 	Green,
@@ -29,7 +28,7 @@ public class Launcher {
 	private int nPlayers;
 	private Player[] players;
 	
-	public Launcher(int nPlayers) {
+	public Launcher(int nPlayers) {	
 		this.openCells = new Cell[OPEN_CELLS];
 		this.closeCells = new Cell[MAX_PLAYERS][6];
 		
@@ -51,6 +50,8 @@ public class Launcher {
 				this.printCells();
 			}
 		}
+		
+		GameField gameField = new GameField(openCells, closeCells);
 	}
 	
 	public void setupCells() {
@@ -59,11 +60,11 @@ public class Launcher {
 			
 			for(int c = 0; c < 13; c++) {
 				int cellIndex = (p * 13) + c;
-				Color cellColor = Color.White;
+				CellColor cellColor = CellColor.White;
 				CellType cellType = CellType.Open;
 				
 				if(c == 0) {
-					cellColor = Color.values()[cellIndex / 13];
+					cellColor = CellColor.values()[cellIndex / 13];
 				} else if(c == 8) {
 					cellType = CellType.Star;
 				}
@@ -72,7 +73,7 @@ public class Launcher {
 			}
 			
 			for(int c = 0; c < 6; c++) {
-				Color cellColor = Color.values()[p];
+				CellColor cellColor = CellColor.values()[p];
 				CellType cellType = CellType.Close;
 				
 				if(c == 5) {
@@ -88,7 +89,7 @@ public class Launcher {
 		for(int p = 0; p < nPlayers; p++) {
 			Cell[] playerCells = new Cell[57];
 			char playerCode = playerCodes[p];
-			Color playerColor = Color.values()[p];
+			CellColor playerColor = CellColor.values()[p];
 			
 			for(int c = 0; c <= 50; c++) {
 				int cellIndex = ((p * 13) + c) % 52;

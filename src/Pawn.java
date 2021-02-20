@@ -1,6 +1,6 @@
 public class Pawn {
 	private final int pawnCode;
-	private final Color pawnColor;
+	private final CellColor pawnColor;
 	private boolean pawnStatus;
 	private boolean pawnWon;
 	private int pawnPosition;
@@ -8,7 +8,7 @@ public class Pawn {
 	private final Player player;
 	private final char playerCode;
 	
-	public Pawn(Player player, int pawnCode, Color pawnColor) {
+	public Pawn(Player player, int pawnCode, CellColor pawnColor) {
 		this.pawnCode = pawnCode;
 		this.pawnColor = pawnColor;
 		this.pawnStatus = false;

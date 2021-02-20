@@ -3,14 +3,14 @@ import java.util.ArrayList;
 public class Player {
 	private final Cell[] playerCells;
 	private final char playerCode;
-	private final Color playerColor;
+	private final CellColor playerColor;
 	private boolean playerWon;
 	
 	private final Pawn[] pawns;
 	
 	private Dice dice = null;
 	
-	public Player(Cell[] playerCells, char playerCode, Color playerColor) {
+	public Player(Cell[] playerCells, char playerCode, CellColor playerColor) {
 		this.playerCells = playerCells;
 		this.playerCode = playerCode;
 		this.playerColor = playerColor;
