@@ -8,13 +8,15 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
-public class Cell extends JPanel {
+public class Cell extends JPanel implements MouseListener  {
 	private final Color[] colors = {
 		Color.BLUE,
 		Color.RED,
@@ -23,11 +25,11 @@ public class Cell extends JPanel {
 		Color.WHITE
 	};
 	
-	private final int[][][] endPositions = {
-		{ {0, 60},  {120, 60},  {60, 0}  },
-		{ {0, 0},   {0, 120},   {60, 60} },
-		{ {0, 0},   {120, 0},   {60, 60} },
-		{ {60, 0},  {60, 120},  {0, 60}  }
+	private final double[][][] endPositions = {
+		{ {0.0, 1.0}, {1.0, 1.0}, {0.5, 0.0} },
+		{ {0.0, 0.0}, {0.0, 1.0}, {1.0, 0.5} },
+		{ {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0} },
+		{ {1.0, 0.0}, {1.0, 1.0}, {0.0, 0.5} }
 	};
 	
 	private final ArrayList<Pawn> pawns;
@@ -42,6 +44,8 @@ public class Cell extends JPanel {
 		this.pawns = new ArrayList<Pawn>();
 		this.cellColor = cellColor;
 		this.cellType = cellType;
+		
+		this.addMouseListener(this);
 	}
 	
 	private Shape createTriangle() {
@@ -49,7 +53,10 @@ public class Cell extends JPanel {
         int index = cellColor.ordinal();
         
         for(int p = 0; p < 3; p++) {
-        	polygon.addPoint(endPositions[index][p][0], endPositions[index][p][1]);
+        	int positionX = (int) (cellDimension.width * endPositions[index][p][0]);
+        	int positionY = (int) (cellDimension.height * endPositions[index][p][1]);
+        	
+        	polygon.addPoint(positionX, positionY);
         }
         
         return polygon;
@@ -71,10 +78,10 @@ public class Cell extends JPanel {
         	for(int line = 0; line < 3; line++) {
         		int nextLine = (line + 1) % 3;
         		
-        		int x1 = endPositions[index][line][0];
-        		int y1 = endPositions[index][line][1];
-        		int x2 = endPositions[index][nextLine][0];
-        		int y2 = endPositions[index][nextLine][1];
+        		int x1 = (int) (cellDimension.width * endPositions[index][line][0]);
+        		int y1 = (int) (cellDimension.height * endPositions[index][line][1]);
+        		int x2 = (int) (cellDimension.width * endPositions[index][nextLine][0]);
+        		int y2 = (int) (cellDimension.height * endPositions[index][nextLine][1]);
         		
                 graphics2D.setColor(Color.BLACK);
                 graphics2D.setStroke(new BasicStroke(2));
@@ -175,4 +182,22 @@ public class Cell extends JPanel {
 	public CellType getType() {
 		return this.cellType;
 	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println("CLICK ON CELL ");
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) { }
+
+	@Override
+	public void mouseReleased(MouseEvent e) { }
+
+	@Override
+	public void mouseEntered(MouseEvent e) { }
+
+	@Override
+	public void mouseExited(MouseEvent e) { }
 }
