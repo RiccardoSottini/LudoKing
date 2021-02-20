@@ -40,6 +40,10 @@ public class Cell extends JPanel implements MouseListener  {
 	
 	private Dimension cellDimension;
 	private Point cellPosition;
+	private int cellWidth = 46;
+	private int cellHeight = 46;
+	
+	private JPanel boardPanel;
 	
 	public Cell(CellColor cellColor, CellType cellType) {
 		this.pawns = new ArrayList<Pawn>();
@@ -93,11 +97,22 @@ public class Cell extends JPanel implements MouseListener  {
         }
     }
 	
-	public void drawCell(Dimension cellDimension, Point cellPosition, JPanel boardPanel) {	
+	public void setupCell(Dimension cellDimension, Point cellPosition, JPanel boardPanel) {
+		this.cellWidth = cellDimension.width;
+		this.cellHeight = cellDimension.height;
+		
 		this.cellDimension = cellDimension;
 		this.cellPosition = cellPosition;
+		this.boardPanel = boardPanel;
 		
-		this.drawPawns(boardPanel);
+		JPanel pp = new JPanel();
+		pp.setPreferredSize(new Dimension(20, 20));
+		pp.setLocation(10, 10);
+		pp.setBackground(Color.BLACK);
+		pp.setOpaque(true);
+		pp.setVisible(true);
+		
+		//this.add(pp);
 		
 		if(this.cellType == CellType.End) {
 			int cellPositionX, cellPositionY;
@@ -136,7 +151,9 @@ public class Cell extends JPanel implements MouseListener  {
 		boardPanel.add(this);
 	}
 	
-	public void drawPawns(JPanel boardPanel) {
+	public void drawPawns() {
+		this.removeAll();
+		
 		for(int p = 0; p < this.pawns.size(); p++) {
 			Pawn pawn = this.pawns.get(p);
 			int pawnOffset;
@@ -146,28 +163,30 @@ public class Cell extends JPanel implements MouseListener  {
 			if(this.pawns.size() == 1) {
 				pawnOffset = 4;
 				
-				int pawnWidth = this.cellDimension.width - (this.cellDimension.width / 4) - 2;
-				int pawnHeight = this.cellDimension.height - (this.cellDimension.height / 4) - 2;
+				int pawnWidth = this.cellWidth - (this.cellWidth / 4) - 2;
+				int pawnHeight = this.cellHeight - (this.cellHeight / 4) - 2;
 				
 				pawnDimension = new Dimension(pawnWidth, pawnHeight);
-				pawnPosition = this.cellPosition;
+				pawnPosition = new Point(0, 0);
 				
-				pawn.drawPawn(pawnDimension, pawnPosition, pawnOffset, boardPanel);
+				pawn.drawPawn(pawnDimension, pawnPosition, pawnOffset, this);
 			} else {
 				pawnOffset = 2;
 				
 				//int pawnWidth = this.cellDimension.width - (this.cellDimension.width / 4)
-				int pawnWidth = (this.cellDimension.width - 8) / 2;
-				int pawnHeight = (this.cellDimension.height - 8) / 2;
-				int pawnPositionX = this.cellPosition.x + ((p % 2 == 1) ? pawnWidth : 0);
-				int pawnPositionY = this.cellPosition.y + ((p >= 2) ? pawnHeight : 0);
+				int pawnWidth = (this.cellWidth - 8) / 2;
+				int pawnHeight = (this.cellHeight - 8) / 2;
+				int pawnPositionX = ((p % 2 == 1) ? pawnWidth : 0);
+				int pawnPositionY = ((p >= 2) ? pawnHeight : 0);
 				
 				pawnDimension = new Dimension(pawnWidth, pawnHeight);
 				pawnPosition = new Point(pawnPositionX, pawnPositionY);
 				
-				pawn.drawPawn(pawnDimension, pawnPosition, pawnOffset, boardPanel);
+				pawn.drawPawn(pawnDimension, pawnPosition, pawnOffset, this);
 			}
 		}
+		
+		this.repaint();
 	}
 	
 	public boolean canKill() {
@@ -176,13 +195,18 @@ public class Cell extends JPanel implements MouseListener  {
 	
 	public void addPawn(Pawn pawn) {
 		this.pawns.add(pawn);
+		this.drawPawns();
 	}
 	
-	public void removePawn(Pawn pawn) {
+	public void removePawn(Pawn pawn, boolean cellRefresh) {
 		for(int p = 0; p < this.pawns.size(); p++) {
 			if(pawn == this.pawns.get(p)) {
-				this.pawns.remove(p);
+				this.pawns.remove(this.pawns.get(p));
 			}
+		}
+		
+		if(cellRefresh) {
+			this.drawPawns();
 		}
 	}
 	
@@ -194,9 +218,11 @@ public class Cell extends JPanel implements MouseListener  {
 				if(comparedPawn.getPlayerCode() != selectedPawn.getPlayerCode()) {
 					System.out.println("Pawn Killed: " + comparedPawn.getCode());
 					comparedPawn.setDead();
-					this.removePawn(comparedPawn);
+					this.removePawn(comparedPawn, false);
 				}
 			}
+			
+			this.drawPawns();
 		}
 	}
 	

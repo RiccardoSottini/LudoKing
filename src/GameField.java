@@ -71,10 +71,26 @@ public class GameField extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
 		this.setResizable(false);                              
 		this.setLocationRelativeTo(null);
-		this.setLayout(null);
+		//this.setLayout(null);
 		
 		//this.add(this.setupBoard());
-		this.setContentPane(this.createBoard());
+		
+		/*JPanel glassPane = new JPanel();
+		glassPane.setLayout(null);
+		glassPane.setPreferredSize(new Dimension(this.frameWidth, this.frameHeight));
+		glassPane.setOpaque(true);
+		glassPane.setVisible(true);
+		
+		JPanel test = new JPanel();
+		test.setBackground(Color.BLACK);
+		test.setPreferredSize(new Dimension(50, 50));
+		test.setOpaque(true);
+		test.setVisible(true);
+		
+		glassPane.add(test);*/
+		
+		this.add(this.createBoard());
+		//this.setGlassPane(glassPane);
 		
 		this.setPreferredSize(new Dimension(this.frameWidth, this.frameHeight));
 		this.pack();
@@ -94,7 +110,7 @@ public class GameField extends JFrame {
 			int positionY = openPositions[c][1] * cellHeight;
 			Point cellPosition = new Point(positionX, positionY);
 			
-			this.openCells[c].drawCell(cellDimension, cellPosition, boardPanel);
+			this.openCells[c].setupCell(cellDimension, cellPosition, boardPanel);
 		}
 		
 		for(int p = 0; p < closeCells.length; p++) {
@@ -106,7 +122,7 @@ public class GameField extends JFrame {
 				int positionY = closePositions[positionIndex][1] * cellHeight;
 				Point cellPosition = new Point(positionX, positionY);
 				
-				this.closeCells[p][c].drawCell(cellDimension, cellPosition, boardPanel);
+				this.closeCells[p][c].setupCell(cellDimension, cellPosition, boardPanel);
 			}
 		}
 		

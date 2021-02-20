@@ -38,6 +38,8 @@ public class Launcher {
 		this.setupCells();
 		this.setupPlayers();
 		
+		GameField gameField = new GameField(openCells, closeCells);
+		
 		/*Pawn p1 = new Pawn(players[0], 0, CellColor.Blue);
 		Pawn p2 = new Pawn(players[1], 0, CellColor.Red);
 		Pawn p3 = new Pawn(players[2], 0, CellColor.Green);
@@ -48,7 +50,7 @@ public class Launcher {
 		openCells[1].addPawn(p3);
 		openCells[1].addPawn(p4);*/
 		
-		for(int d = 0; d < 100; d++) {
+		for(int d = 0; d < 300; d++) {
 			for(int p = 0; p < nPlayers; p++) {
 				int nDice = (d * nPlayers) + p;
 				int diceValue = this.players[p].playDice().getValue();
@@ -59,14 +61,18 @@ public class Launcher {
 				
 				this.players[p].playMove(n);
 				
-				System.out.println("Roll Dice: #" + nDice + ", " + diceValue);
+				/*System.out.println("Roll Dice: #" + nDice + ", " + diceValue);
 				System.out.println("Player: " + playerCodes[p]);
 				
-				this.printCells();
+				this.printCells();*/
+				
+				try {
+				    Thread.sleep(100);
+				} catch (Exception e) {
+				    e.printStackTrace();
+				}
 			}
 		}
-		
-		GameField gameField = new GameField(openCells, closeCells);
 	}
 	
 	public void setupCells() {

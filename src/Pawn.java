@@ -71,7 +71,7 @@ public class Pawn extends JPanel {
         graphics2D.draw(circleCenter);
 	}
 	
-	public void drawPawn(Dimension pawnDimension, Point pawnCoord, int pawnOffset, JPanel boardPanel) {
+	public void drawPawn(Dimension pawnDimension, Point pawnCoord, int pawnOffset, JPanel cellPanel) {
 		this.pawnDimension = pawnDimension;
 		this.pawnCoord = new Point((int)(pawnCoord.x + pawnOffset * 1.5), (int)(pawnCoord.y + pawnOffset + 2));
 		this.pawnOffset = pawnOffset;
@@ -81,7 +81,7 @@ public class Pawn extends JPanel {
 		this.setOpaque(false);
 		this.setVisible(true);
 		
-		boardPanel.add(this);
+		cellPanel.add(this);
 	}
 	
 	public boolean movePawn(int changePosition) {
@@ -96,11 +96,11 @@ public class Pawn extends JPanel {
 				newCell.killPawns(this);
 			}
 			
-			newCell.addPawn(this);
-			
 			if(oldCell != null) {
-				oldCell.removePawn(this);
+				oldCell.removePawn(this, true);
 			}
+			
+			newCell.addPawn(this);
 			
 			return true;
 		}
