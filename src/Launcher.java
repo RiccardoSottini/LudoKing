@@ -39,39 +39,16 @@ public class Launcher {
 		this.setupCells();
 		this.setupPlayers();
 		
-		for(int d = 0; d < 60; d++) {
-			int diceValue = this.players[d % 4].playDice().getValue();
-			this.players[d % 4].playMove(0);
-			
-			System.out.println("Roll Dice: #" + d + ", " + diceValue);
-			System.out.println("Player: " + playerCodes[d % 4]);
-			
-			for(int c = 0; c < OPEN_CELLS; c++) {
-				System.out.println("Cell #" + c + ", Color: " + openCells[c].getColor() + ", Type: " + openCells[c].getType());
+		for(int d = 0; d < 20; d++) {
+			for(int p = 0; p < nPlayers; p++) {
+				int nDice = (d * nPlayers) + p;
+				int diceValue = this.players[p].playDice().getValue();
+				this.players[p].playMove(0);
 				
-				for(String pawnCode : openCells[c].getPawnCodes()) {
-					System.out.println("Pawn Code: " + pawnCode);
-				}
-			}
-			
-			System.out.println();
-		}
-		
-		
-		for(int c = 0; c < OPEN_CELLS; c++) {
-			System.out.println("Cell #" + c + ", Color: " + openCells[c].getColor() + ", Type: " + openCells[c].getType());
-		
-			for(String pawnCode : openCells[c].getPawnCodes()) {
-				System.out.println("Pawn Code: " + pawnCode);
-			}
-		}
-		
-		for(int p = 0; p < nPlayers; p++) {
-			System.out.println();
-			System.out.println("Player #" + (p + 1) + ":");
-			
-			for(int c = 0; c < 6; c++) {
-				System.out.println("Cell #" + c + ", Color: " + closeCells[p][c].getColor() + ", Type: " + closeCells[p][c].getType());
+				System.out.println("Roll Dice: #" + nDice + ", " + diceValue);
+				System.out.println("Player: " + playerCodes[p]);
+				
+				this.printCells();
 			}
 		}
 	}
@@ -125,6 +102,32 @@ public class Launcher {
 			
 			this.players[p] = new Player(playerCells, playerCode, playerColor);
 		}
+	}
+	
+	public void printCells() {
+		for(int c = 0; c < OPEN_CELLS; c++) {
+			System.out.println("Cell #" + c + ", Color: " + openCells[c].getColor() + ", Type: " + openCells[c].getType());
+			
+			for(String pawnCode : openCells[c].getPawnCodes()) {
+				System.out.println("Pawn Code: " + pawnCode);
+			}
+		}
+		
+		System.out.println("-----------");
+		
+		for(int p = 0; p < nPlayers; p++) {
+			for(int c = 0; c < 6; c++) {
+				System.out.println("Close Cell #" + playerCodes[p] + c + ", Color: " + closeCells[p][c].getColor() + ", Type: " + closeCells[p][c].getType());
+				
+				for(String pawnCode : closeCells[p][c].getPawnCodes()) {
+					System.out.println("Pawn Code: " + pawnCode);
+				}
+			}
+			
+			System.out.println("-----------");
+		}
+		
+		System.out.println();
 	}
 	
 	public static void main(String[] args) {

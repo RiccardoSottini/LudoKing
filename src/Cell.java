@@ -17,6 +17,23 @@ public class Cell {
 		this.cellType = cellType;
 	}
 	
+	public boolean canKill() {
+		return cellType == CellType.Open && cellColor == Color.White;
+	}
+	
+	public void killPawns(Pawn selectedPawn) {
+		if(this.canKill()) {
+			for(int p = 0; p < this.pawns.size(); p++) {
+				Pawn comparedPawn = this.pawns.get(p);
+				
+				if(comparedPawn.getPlayerCode() != selectedPawn.getPlayerCode()) {
+					System.out.println("Pawn Killed: " + comparedPawn.getCode());
+					this.removePawn(comparedPawn);
+				}
+			}
+		}
+	}
+	
 	public void addPawn(Pawn pawn) {
 		this.pawns.add(pawn);
 	}

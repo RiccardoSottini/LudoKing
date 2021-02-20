@@ -1,11 +1,11 @@
 import java.util.ArrayList;
 
 public class Player {
-	private Cell[] playerCells;
+	private final Cell[] playerCells;
 	private final char playerCode;
 	private final Color playerColor;
 	
-	private Pawn[] pawns;
+	private final Pawn[] pawns;
 	
 	private Dice dice = null;
 	
@@ -30,22 +30,24 @@ public class Player {
 			Pawn selectedPawn = this.pawns[pawnIndex];
 			int changePosition = this.dice.getValue();
 			
-			if(selectedPawn.isPossible(this.dice.getValue())) {
-				int oldPosition = selectedPawn.getPosition();
-				int newPosition = selectedPawn.addPosition(changePosition);
-				
-				this.playerCells[oldPosition].removePawn(selectedPawn);
-				this.playerCells[newPosition].addPawn(selectedPawn);
-			}
+			selectedPawn.movePawn(changePosition);
 		}
 		
-		System.out.println("Player: " + getCode());
+		/*System.out.println("Player: " + getCode());
 		System.out.println("Dice: " + this.dice.getValue());
 		
 		for(int c = 0; c < 57; c++) {
 			System.out.println("Cell #" + c + ", Color: " + playerCells[c].getColor() + ", Type: " + playerCells[c].getType());
 			System.out.println(playerCells[c].getPawns().size());
+		}*/
+	}
+	
+	public Cell getCell(int position) {
+		if(position >= 0) {
+			return this.playerCells[position];
 		}
+		
+		return null;
 	}
 	
 	public char getCode() {
